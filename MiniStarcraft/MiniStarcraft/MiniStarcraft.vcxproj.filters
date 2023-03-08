@@ -3,5 +3,6 @@
   <ItemGroup>
     <ClCompile Include="starcraft.c" />
     <ClCompile Include="HowTo.cpp" />
+    <ClCompile Include="star.c" />
   </ItemGroup>
 </Project>
