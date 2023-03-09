@@ -45,7 +45,7 @@ typedef struct
 	int tribeID;
 	int unitID;
 	int team;
-
+	
 }UnitInfo;
 
 UnitInfo board[UPDOWN][SIDE];
@@ -89,7 +89,7 @@ int main()
 		Display();
 		printf("명령어\n p : 생산 // s : 유닛 정보 출력 // S : 모든 유닛 정보 출력 // D : 해당 유닛 삭제\n // f : 가장 가까운 적 유닛 정보 출력  // a : 모든 유닛 ID 출력 : ");
 		scanf(" %c", &selectOrder);
-
+		
 		switch (selectOrder)
 		{
 		case 'p':
@@ -98,7 +98,7 @@ int main()
 			system("cls");
 
 			Produce(inputX1, inputY1, selectUnit);
-
+			
 
 			break;
 		case 's':
@@ -106,7 +106,7 @@ int main()
 			system("cls");
 
 			Select(inputX1, inputY1);
-
+			
 
 			break;
 		case 'S':
@@ -153,7 +153,7 @@ void ClearBoard()
 	{
 		for (int x = 0; x < SIDE; x++)
 		{
-
+			
 			Unit_Clear(x, y);
 		}
 	}
@@ -198,7 +198,7 @@ void Display()
 		for (int x = 0; x < SIDE; x++)
 		{
 			if (board[y][x].life == TRUE)
-				printf("%c", board[y][x].unitName);
+					printf("%c", board[y][x].unitName);
 			else
 				printf("+");
 		}
@@ -280,7 +280,7 @@ void FindTarget(int x1, int y1)
 	int minUnitIDX[1000] = { 0 };
 	int minUnitIDY[1000] = { 0 };
 	int minIDCount = 0;
-	for (int y2 = 0; y2 < UPDOWN; y2++)
+	for (int y2 = 0; y2<UPDOWN; y2++)
 	{
 		for (int x2 = 0; x2 < SIDE; x2++)
 		{
