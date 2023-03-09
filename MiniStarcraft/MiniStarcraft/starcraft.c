@@ -177,18 +177,17 @@ void FirstBoard()
 	Unit_T(0, 4);
 
 	Unit_H(39, 19);
-	Unit_H(38, 19);
+	Unit_H(39, 18);
 	Unit_H(37, 17);
-	Unit_H(36, 18);
-	Unit_H(35, 18);
-	Unit_H(34, 19);
+	Unit_H(38, 16);
+	Unit_H(38, 15);
+	Unit_H(39, 14);
 
+	Unit_Q(39, 17);
+	Unit_Q(38, 17);
 
-	Unit_Q(37, 19);
-	Unit_Q(37, 18);
-
-	Unit_D(36, 19);
-	Unit_D(35, 19);
+	Unit_D(39, 15);
+	Unit_D(39, 16);
 }
 
 void Display()
@@ -306,6 +305,7 @@ void FindTarget(int x1, int y1)
 		}
 	}
 
+	printf("가장 가까운 적 : ");
 	for (int i = 0; i < minIDCount; i++)
 	{
 		Select(minUnitIDX[i], minUnitIDY[i]);
@@ -386,10 +386,7 @@ void SortByID()
 
 int Distance(int x1, int y1, int x2, int y2)
 {
-	//printf("%d %d %d %d", x1, y1, x2, y2);
-	//printf("%f %f %f %f", x1, y1, x2, y2);
 	int unitDistance = (y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1);
-	printf("%d\n", unitDistance);
 	return unitDistance;
 }
 
