@@ -4,5 +4,6 @@
     <ClCompile Include="HowTo.cpp" />
     <ClCompile Include="starcraft.c" />
     <ClCompile Include="starcraft_prac_0309.c" />
+    <ClCompile Include="temp.c" />
   </ItemGroup>
 </Project>
