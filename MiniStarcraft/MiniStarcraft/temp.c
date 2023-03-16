@@ -56,8 +56,8 @@ void Display();
 void Produce(int x, int y, char c);
 void Select(int x, int y);
 void SelectAll(int x1, int y1, int x2, int y2);
-void Destroy(int x, int y);
 
+void Destroy(int x, int y);
 void FindTarget(int x1, int y1);
 int Distance(int x1, int y1, int x2, int y2);
 void SortByID();
@@ -122,10 +122,11 @@ int main()
 			break;
 
 		case 'a':
-				system("cls");
+			system("cls");
 
-				SortByID();
-				break;
+			SortByID();
+			break;
+
 		default:
 			system("cls");
 			printf("잘못된 값\n");
@@ -256,7 +257,7 @@ void FindTarget(int x1, int y1)
 	{
 		for (int x2 = 0; x2 < SIDE; x2++)
 		{
-			if (board[y2][x2].team != board[y1][x1].team && board[y2][x2].tribeID != 0 && Distance(x1, y1, x2, y2) < min)//팀다르고 공백아니고 최소값 아닐떄
+			if (board[y2][x2].team != board[y1][x1].team && board[y2][x2].tribeID != 0 && Distance(x1, y1, x2, y2) < min)//팀다르고 공백아니고 최소값보다 작을 떄
 			{
 				for (int i = 0; i < minCount; i++)
 				{
