@@ -60,6 +60,7 @@ void Unit_V(int x, int y);
 
 //유닛 초기 배치
 void StartBoard();
+int Distance(int x1, int y1, int x2, int y2);
 
 void Display();
 void Produce(int x, int y, char unit);
@@ -69,23 +70,21 @@ void Destroy(int x, int y);
 void FindTarget(int x1, int y1);
 void SortByID();
 
-int Distance(int x1, int y1, int x2, int y2);
 
 
 int main()
 {
-	int x = 0;
-	int y = 0;
-	int x1 = 0;
-	int y1 = 0;
-	int x2 = 0;
-	int y2 = 0;
+	int x;
+	int y;
+	int x1;
+	int y1;
+	int x2;
+	int y2;
 
-	char order = 0;
-	char select = 0;
+	char order;
+	char unit;
 
 	StartBoard();
-
 
 	while (true)
 	{
@@ -97,96 +96,96 @@ int main()
 		y2 = 0;
 
 		order = 0;
-		select = 0;
-
+		unit = 0;
 
 		Display();
-		printf("생산 : p // 유닛 정보 : s // 전체 유닛 정보 : S\n유닛 제거 : d // 가까운 적 : f // 모든 유닛 출력 : e\n");
+		printf("생산(x,y,unit) : p // 유닛 선택(x,y) : s // 유닛 범위내 선택(x1,y1,x2,y2) : S // 삭제(x,y) : d\n가까운 적(x,y) : f // 모든 유닛 출력 : e // 게임 나가기 : q\nex) (1,2)좌표에 히드라 생산 : p 1 2 h\n명령어에 필요 이상의 값이 들어갈 경우 화면이 안보일 수 있습니다 이 경우, 추가적인 명령어를 입력하다보면 다시 돌아옵니다.\n");
 		printf("명령어 : ");
-
-		scanf_s(" %c", &select);
+		scanf_s(" %c", &order);
 		system("cls");
 
 
-
-		switch (select)
+		switch (order)
 		{
 		case 'p':
-			scanf_s("%d %d %c", &x, &y, &order);
-			if (x<0 || x>SIDE || y < 0 || y >= UPDOWN)
+			scanf_s("%d %d %c", &x, &y, &unit);
+			if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
 			{
-				printf("잘못된 좌표p\n");
+				printf("잘못된 값\n");
+				break;
+			}
+			if (unit == 'h' || unit == 'q' || unit == 'd' || unit == 'm' || unit == 't' || unit == 'v')
+			{
+				Produce(x, y, unit);
+				break;
 			}
 			else
-			{
-				if (order == 'h' || order == 'q' || order == 'd' || order == 'm' || order == 't' || order == 'v')
-					Produce(x, y, order);
-				else
-					printf("잘못된 유닛값p\n");
-			}
-
+				printf("잘못된 값\n");
 			break;
 
-		case 's':
+		case's':
 			scanf_s("%d %d", &x, &y);
-			if (x<0 || x>SIDE || y < 0 || y >= UPDOWN)
+			if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
 			{
-				printf("잘못된 좌표s\n");
+				printf("잘못된 값\n");
+				break;
 			}
-			else
+			if (board[y][x].life == 0)
 			{
-				if (board[y][x].life != 0)
-					Select(x, y);
-				else
-					printf("빈 땅s\n");
+				printf("빈 땅\n");
+				break;
 			}
+			Select(x, y);
 			break;
 
 		case 'S':
 			scanf_s("%d %d %d %d", &x1, &y1, &x2, &y2);
-
-			if (x1<0 || x1>SIDE || y1 < 0 || y1 >= UPDOWN || x2<0 || x2>SIDE || y2 < 0 || y2 >= UPDOWN)
+			if (x1 < 0 || x1 >= SIDE || y1 < 0 || y1 >= UPDOWN || x2 < 0 || x2 >= SIDE || y2 < 0 || y2 >= UPDOWN)
 			{
-				printf("잘못된 좌표S\n");
+				printf("잘못된 값\n");
+				break;
 			}
-			else
-				SelectAll(x1, y1, x2, y2);
-
+			SelectAll(x1, y1, x2, y2);
 			break;
 
 		case 'd':
 			scanf_s("%d %d", &x, &y);
-			if (x<0 || x>SIDE || y < 0 || y >= UPDOWN)
+			if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
 			{
-				printf("잘못된 좌표d\n");
+				printf("잘못된 값\n");
+				break;
 			}
-			else
-				Destroy(x, y);
 
+			Destroy(x, y);
 			break;
 
 		case 'f':
 			scanf_s("%d %d", &x, &y);
-			if (x<0 || x>SIDE || y < 0 || y >= UPDOWN)
+			if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
 			{
-				printf("잘못된 좌표f\n");
+				printf("잘못된 값\n");
+				break;
 			}
-			else
-				FindTarget(x, y);
 
+			FindTarget(x, y);
 			break;
 
 		case 'e':
 			SortByID();
-
 			break;
+
+		case 'q':
+			return 0;
 
 		default:
+			printf("잘못된 값\n");
 			break;
+
 		}
 	}
-}
 
+	return 0;
+}
 
 void Display()
 {
@@ -207,7 +206,7 @@ void Produce(int x, int y, char unit)
 {
 	if (board[y][x].life != 0)
 	{
-		printf("이미 유닛이 존재합니다\n");
+		printf("이미 유닛이 존재함.\n");
 		return;
 	}
 
@@ -216,50 +215,41 @@ void Produce(int x, int y, char unit)
 		Unit_H(x, y);
 		Select(x, y);
 	}
-
-	if (unit == 'q')
+	else if (unit == 'q')
 	{
-		Unit_H(x, y);
+		Unit_Q(x, y);
 		Select(x, y);
 	}
-
-	if (unit == 'd')
+	else if (unit == 'd')
 	{
-		Unit_H(x, y);
+		Unit_D(x, y);
 		Select(x, y);
 	}
-
-	if (unit == 'm')
+	else if (unit == 'm')
 	{
-		Unit_H(x, y);
+		Unit_M(x, y);
 		Select(x, y);
 	}
-
-	if (unit == 't')
+	else if (unit == 't')
 	{
-		Unit_H(x, y);
+		Unit_T(x, y);
 		Select(x, y);
 	}
-
-	if (unit == 'v')
+	else if (unit == 'v')
 	{
-		Unit_H(x, y);
+		Unit_V(x, y);
 		Select(x, y);
 	}
-
-
 }
 
 void Select(int x, int y)
 {
-	if (board[y][x].life != 0)
-	{//name HP MP x,y unitID
-		printf("name : %c HP : %d MP : %d 좌표 (%d,%d) ID : %c%04d",
-			board[y][x].name, board[y][x].HP, board[y][x].MP
-			, board[y][x].x, board[y][x].y, board[y][x].name, board[y][x].unitID);
-		printf("\n\n");
+	if (board[y][x].life == 0)
+		return;
 
-	}
+	printf("name : %c HP : %d MP : %d 좌표 : (%d,%d) ID : %c%04d",
+		board[y][x].name, board[y][x].HP, board[y][x].MP, board[y][x].x, board[y][x].y, board[y][x].name, board[y][x].unitID);
+	printf("\n\n");
 }
 
 void SelectAll(int x1, int y1, int x2, int y2)
@@ -281,6 +271,7 @@ void Destroy(int x, int y)
 		return;
 	}
 	printf("(%d,%d) 좌표의 유닛을 제거했습니다.\n", x, y);
+
 	board[y][x].life = 0;
 }
 
@@ -288,17 +279,18 @@ void FindTarget(int x1, int y1)
 {
 	if (board[y1][x1].life == 0)
 	{
-		printf("빈 땅f\n");
+		printf("빈 땅\n");
 		return;
 	}
-	int min = 100000000;
+
+	int min = 10000000;
 	int minX = 0;
 	int minY = 0;
 	for (int y2 = 0; y2 < UPDOWN; y2++)
 	{
 		for (int x2 = 0; x2 < SIDE; x2++)
 		{//적이면서 빈땅이 아니면서 최소값보다 작으면
-			if (board[y2][x2].team != board[y1][x1].team && board[y2][x2].life != 0 && Distance(x1, y1, x2, y2) < min)
+			if (board[y1][x1].team != board[y2][x2].team && board[y2][x2].life != 0 && Distance(x1, y1, x2, y2) < min)
 			{
 				min = Distance(x1, y1, x2, y2);
 				minX = x2;
@@ -307,18 +299,17 @@ void FindTarget(int x1, int y1)
 		}
 	}
 
-	printf("가까운 적 : ");
 	Select(minX, minY);
 }
 
 void SortByID()
-{//d h m q t v
+{//D H M Q T V
 	for (int i = 0; i < DefilerCount; i++)
 	{
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == DefilerID && board[y][x].unitID == i)
 					Select(x, y);
 			}
@@ -329,7 +320,7 @@ void SortByID()
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == HydraID && board[y][x].unitID == i)
 					Select(x, y);
 			}
@@ -340,7 +331,7 @@ void SortByID()
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == MarineID && board[y][x].unitID == i)
 					Select(x, y);
 			}
@@ -351,7 +342,7 @@ void SortByID()
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == QueenID && board[y][x].unitID == i)
 					Select(x, y);
 			}
@@ -362,7 +353,7 @@ void SortByID()
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == TankID && board[y][x].unitID == i)
 					Select(x, y);
 			}
@@ -373,13 +364,12 @@ void SortByID()
 		for (int y = 0; y < UPDOWN; y++)
 		{
 			for (int x = 0; x < SIDE; x++)
-			{//ID같고 count 순서대로
+			{//디파일러랑 종족값이 같으면서 아이디 == 카운트
 				if (board[y][x].tribeID == VesselID && board[y][x].unitID == i)
 					Select(x, y);
 			}
 		}
 	}
-
 
 
 }

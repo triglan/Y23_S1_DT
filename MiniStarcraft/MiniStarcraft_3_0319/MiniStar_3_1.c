@@ -50,6 +50,19 @@ int MarineCount = 0;
 int TankCount = 0;
 int VesselCount = 0;
 
+int inputX = 0;
+int inputY = 0;
+int inputX1 = 0;
+int inputY1 = 0;
+int inputX2 = 0;
+int inputY2 = 0;
+
+char inputUnit = 0;
+
+char orderList[30];
+int orderCount = 0;
+
+int continueGame = 0;
 //유닛 정보
 void Unit_H(int x, int y);
 void Unit_Q(int x, int y);
@@ -60,19 +73,34 @@ void Unit_V(int x, int y);
 
 //유닛 초기 배치
 void StartBoard();
+int Distance(int x1, int y1, int x2, int y2);
+
+void Display();
+void DestroyAll(int x1, int y1, int x2, int y2);
+void Order(char command);
+void ShowOrderList(char order);
+void GetDistance(int x1, int y1, int x2, int y2);
+void FindWeakEnemy(int x1, int y1);
 
 
+int main()
+{
+	continueGame = 1;
+	StartBoard();
+
+	char command = 0;
+	while (continueGame)
+	{
+		Display();
+		scanf_s(" %c", &command);
+		system("cls");
+
+		Order(command);
+	}
 
 
-
-
-
-
-
-
-
-
-
+	return 0;
+}
 
 void StartBoard()
 {
@@ -104,6 +132,114 @@ void StartBoard()
 	Unit_D(39, 15);
 }
 
+void Display()
+{
+	for (int y = 0; y < UPDOWN; y++)
+	{
+		for (int x = 0; x < SIDE; x++)
+		{
+			if (board[y][x].life != 0)
+				printf("%c", board[y][x].name);
+			else
+				printf("+");
+		}
+		printf("\n");
+	}
+}
+
+void ShowOrderList(char order)
+{
+	int i = 0;
+	while (orderList[i] == 0)
+	{
+		printf("%c ", orderList[i]);
+		if (i % 10 == 9)
+			printf("\n");
+		i++;
+	}
+}
+
+void Order(char command)
+{
+
+
+	switch (command)
+	{
+	case'p':
+		scanf_s("%d %d %c", &inputX, &inputY, &inputUnit);
+
+		orderList[orderCount] = 'p';
+		orderCount++;
+		break;
+
+	case 's':
+
+	case 'S':
+
+	case 'm':
+
+	case 'a':
+
+	case 'e':
+		scanf_s("%d %d %d %d", &inputX1, &inputY1, &inputX2, &inputY2);
+
+		GetDistance(inputX1, inputY1, inputX2, inputY2);
+		break;
+	case'q':
+		continueGame = 0;
+		break;
+	default:
+		break;
+	}
+}
+
+void DestroyAll(int x1, int y1, int x2, int y2)
+{//왼쪽 위부터 아래쪽 아래로만 해야 드래그가 됌
+	for (int y = y1; y <= y2; y++)
+	{
+		for (int x = x1; x <= x2; x++)
+		{
+			board[y][x].life = 0;
+		}
+	}
+}
+
+int Distance(int x1, int y1, int x2, int y2)
+{
+	int a = x2 - x1;
+	int b = y2 - y1;
+	int distance = sqrt((a * a) + (b * b));
+
+	return distance;
+}
+
+void GetDistance(int x1, int y1, int x2, int y2)
+{
+	int distance = Distance(x1, y1, x2, y2);
+	printf("%d", distance);
+}
+
+void FindWeakEnemy(int x1, int y1)
+{
+	int min = 100000000;
+	int minX = 0;
+	int minY = 0;
+
+	for (int y2 = 0; y2 < UPDOWN; y2++)
+	{
+		for (int x2 = 0; x2 < SIDE; x2++)
+		{//적이면서 빈땅이 아니면서 최소값보다 작아야 됌
+			if (board[y2][x2].team != board[y1][x1].team &&
+				board[y2][x2].life != 0 &&
+				Distance(x1, y1, x2, y2) < min)
+			{
+				min = Distance(x1, y1, x2, y2);
+				minX = x2;
+				minY = y2;
+			}
+		}
+	}
+}
 
 void Unit_H(int x, int y)
 {
