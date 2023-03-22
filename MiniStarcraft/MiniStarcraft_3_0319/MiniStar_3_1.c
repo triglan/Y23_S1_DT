@@ -1,7 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
-
+//scanf 검사시 이상한 수 들어가면 ERROR
+//ShowOrderList()에 30개 이상 들어가면 교환
+//Find, Sort 만들기
 #include <stdio.h>
 #include <Windows.h>
+#include <string.h>
+#include <math.h>
 
 //종족값
 #define HydraID 1
@@ -37,10 +41,29 @@ typedef struct
 	int unitID;
 	int team;
 	int life;
+	int distance;
 }UnitInfo;
+
+typedef struct
+{
+	char order;
+	char unit;
+
+	int x;
+	int x1;
+	int x2;
+
+	int y;
+	int y1;
+	int y2;
+}OrderStruct;
 
 //맵
 UnitInfo board[UPDOWN][SIDE];
+//명령어 리스트
+OrderStruct orderL[30];
+int orderCount = 0;
+
 
 //유닛 생성 수
 int HydraCount = 0;
@@ -50,19 +73,17 @@ int MarineCount = 0;
 int TankCount = 0;
 int VesselCount = 0;
 
+
+int continueGame = 0;
+
 int inputX = 0;
 int inputY = 0;
 int inputX1 = 0;
 int inputY1 = 0;
 int inputX2 = 0;
 int inputY2 = 0;
-
 char inputUnit = 0;
 
-char orderList[30];
-int orderCount = 0;
-
-int continueGame = 0;
 //유닛 정보
 void Unit_H(int x, int y);
 void Unit_Q(int x, int y);
@@ -78,10 +99,12 @@ int Distance(int x1, int y1, int x2, int y2);
 void Display();
 void DestroyAll(int x1, int y1, int x2, int y2);
 void Order(char command);
-void ShowOrderList(char order);
+void ShowOrderList();
 void GetDistance(int x1, int y1, int x2, int y2);
-void FindWeakEnemy(int x1, int y1);
+void FindWeakEnemy(int x1, int y1, int surroundDistance);
+void SortByDistance(int x1, int y1);
 
+//s 2 3 
 
 int main()
 {
@@ -89,13 +112,42 @@ int main()
 	StartBoard();
 
 	char command = 0;
+	
+	int x;
+	int y;
+	int surroundDistance;
 	while (continueGame)
 	{
+		command = 0;
+
+		ShowOrderList();
 		Display();
 		scanf_s(" %c", &command);
 		system("cls");
+		switch (command)
+		{
+		case 'm':
+		case 'a':
+		case 's':
+		case 'S':
+		case 'p':
+			Order(command);
+			break;
 
-		Order(command);
+		case 'f':
+			scanf_s("%d %d %d", &x, &y, &surroundDistance);
+
+			FindWeakEnemy(x, y, surroundDistance);
+			break;
+
+		case 'r':
+			scanf_s("%d %d", &x, &y);
+
+			SortByDistance(x, y);
+			break;
+		default:
+			break;
+		}
 	}
 
 
@@ -147,50 +199,128 @@ void Display()
 	}
 }
 
-void ShowOrderList(char order)
+void ShowOrderList()
 {
 	int i = 0;
-	while (orderList[i] == 0)
+	while (orderL[i].order != 0 && i < 30)
 	{
-		printf("%c ", orderList[i]);
-		if (i % 10 == 9)
+		switch (orderL[i].order)
+		{
+		case 'p':
+			printf("/ %c %d %d %c /", orderL[i].order, orderL[i].x, orderL[i].y, orderL[i].unit);
+			break;
+		case 's':
+			printf("/ %c %d %d /", orderL[i].order, orderL[i].x, orderL[i].y);
+			break;
+		case 'S':
+			printf("/ %c %d %d %d %d /", orderL[i].order, orderL[i].x1, orderL[i].y1, orderL[i].x2, orderL[i].y2);
+			break;
+		case 'a':
+			printf("/ %c %d %d /", orderL[i].order, orderL[i].x, orderL[i].y);
+			break;
+		case 'm':
+			printf("/ %c %d %d /", orderL[i].order, orderL[i].x, orderL[i].y);
+			break;
+
+		default:
+			break;
+		}
+		if (i % 10 == 0 && i != 0)
 			printf("\n");
 		i++;
 	}
+	printf("\n");
+
 }
 
 void Order(char command)
 {
-
+	inputX = 0;
+	inputY = 0;
+	inputX1 = 0;
+	inputY1 = 0;
+	inputX2 = 0;
+	inputY2 = 0;
+	inputUnit = 0;
 
 	switch (command)
 	{
 	case'p':
-		scanf_s("%d %d %c", &inputX, &inputY, &inputUnit);
+		scanf_s("%d %d %c", &inputX, &inputY, &inputUnit, 1);
 
-		orderList[orderCount] = 'p';
-		orderCount++;
-		break;
+		orderL[orderCount].order = 'p';
+
+		orderL[orderCount].x = inputX;
+		orderL[orderCount].y = inputY;
+		orderL[orderCount].unit = inputUnit;
+
+		break;   
 
 	case 's':
+		scanf_s("%d %d", &inputX, &inputY);
+
+		orderL[orderCount].order = 's';
+
+		orderL[orderCount].x = inputX;
+		orderL[orderCount].y = inputY;
+
+		break;
 
 	case 'S':
+		scanf_s("%d %d %d %d", &inputX1, &inputY1, &inputX2, &inputY2);
+
+		orderL[orderCount].order = 'S';
+
+		orderL[orderCount].x1 = inputX1;
+		orderL[orderCount].y1 = inputY1;
+		orderL[orderCount].x2 = inputX2;
+		orderL[orderCount].y2 = inputY2;
+
+		break;
 
 	case 'm':
+		scanf_s("%d %d", &inputX, &inputY);
+		
+		orderL[orderCount].order = 'm';
+
+		orderL[orderCount].x = inputX;
+		orderL[orderCount].y = inputY;
+
+		break;
 
 	case 'a':
+		scanf_s("%d %d", &inputX, &inputY);
 
+		orderL[orderCount].order = 'a';
+
+		orderL[orderCount].x = inputX;
+		orderL[orderCount].y = inputY;
+
+		break;
 	case 'e':
 		scanf_s("%d %d %d %d", &inputX1, &inputY1, &inputX2, &inputY2);
 
+		orderL[orderCount].order = 'e';
+
+		orderL[orderCount].x1 = inputX1;
+		orderL[orderCount].y1 = inputY1;
+		orderL[orderCount].x2 = inputX2;
+		orderL[orderCount].y2 = inputY2;
+
 		GetDistance(inputX1, inputY1, inputX2, inputY2);
+
 		break;
+
 	case'q':
+
 		continueGame = 0;
 		break;
+
 	default:
 		break;
 	}
+
+	orderCount++;
 }
 
 void DestroyAll(int x1, int y1, int x2, int y2)
@@ -206,9 +336,13 @@ void DestroyAll(int x1, int y1, int x2, int y2)
 
 int Distance(int x1, int y1, int x2, int y2)
 {
-	int a = x2 - x1;
-	int b = y2 - y1;
-	int distance = sqrt((a * a) + (b * b));
+	int a = abs(x2 - x1);
+	int b = abs(y2 - y1);
+	int distance = 0;
+	if (a > b)
+		distance = a;
+	else
+		distance = b;
 
 	return distance;
 }
@@ -216,28 +350,111 @@ int Distance(int x1, int y1, int x2, int y2)
 void GetDistance(int x1, int y1, int x2, int y2)
 {
 	int distance = Distance(x1, y1, x2, y2);
-	printf("%d", distance);
+	printf("%d\n", distance);
 }
 
-void FindWeakEnemy(int x1, int y1)
+void FindWeakEnemy(int x1, int y1, int surroundDistance)
 {
-	int min = 100000000;
-	int minX = 0;
-	int minY = 0;
+	int minHP = 100000000;
+	int minX[100] = { 0 };
+	int minY[100] = { 0 };
+
+	int minCount = 0;
 
 	for (int y2 = 0; y2 < UPDOWN; y2++)
 	{
 		for (int x2 = 0; x2 < SIDE; x2++)
-		{//적이면서 빈땅이 아니면서 최소값보다 작아야 됌
+		{//적이면서 빈땅이 아니면서 거리내에 있으면서 체력이 적어야됌
 			if (board[y2][x2].team != board[y1][x1].team &&
 				board[y2][x2].life != 0 &&
-				Distance(x1, y1, x2, y2) < min)
+				Distance(x1, y1, x2, y2) < surroundDistance)
 			{
-				min = Distance(x1, y1, x2, y2);
-				minX = x2;
-				minY = y2;
+				if (board[y2][x2].HP < minHP)
+				{
+					minHP = board[y2][x2].HP;
+					minX[0] = x2;
+					minY[0] = y2;
+					minCount = 1;
+				}
+				else if (board[y2][x2].HP == minHP)
+				{
+					minX[minCount] = x2;
+					minY[minCount] = y2;
+					minCount++;
+				}
 			}
 		}
+	}
+
+	if (minCount != 0)
+	{
+		for (int i = 0; i < minCount; i++)
+		{
+			printf("name : %c HP : %d MP : %d 좌표 : (%d,%d) ID : %c%04d\n",
+				board[minX[i]][minY[i]].name, board[minX[i]][minY[i]].HP, board[minX[i]][minY[i]].MP,
+				board[minX[i]][minY[i]].x, board[minX[i]][minY[i]].y, board[minX[i]][minY[i]].name, board[minX[i]][minY[i]].unitID);
+		}
+	}
+	else
+		printf("주어진 범위 내에 적이 없음");
+		
+}
+
+
+void SortByDistance(int x1, int y1)
+{
+	UnitInfo sortUnit[UPDOWN * SIDE] = { 0 };
+ 	int unitCount = 0;
+	//가까우면서 거리가 같으면 ID순으로 출력
+	for (int y2 = 0; y2 < UPDOWN; y2++)
+	{
+		for (int x2 = 0; x2 < SIDE; x2++)
+		{
+			if (board[y2][x2].life != 0 && board[y2][x2].x != x1 && board[y2][x2].y != y1)//유닛이면 거리 저장
+			{
+				sortUnit[unitCount] = board[y2][x2];
+				sortUnit[unitCount].distance = Distance(x1, y1, x2, y2);
+				unitCount++;
+			}
+		}
+	}
+
+	//거리 Sort
+	for (int i = 0; i < unitCount; i++)
+	{
+		for (int j = 0; j < unitCount; j++)
+		{
+			if (sortUnit[i].distance < sortUnit[j].distance)
+			{
+				UnitInfo temp = sortUnit[i];
+				sortUnit[i] = sortUnit[j];
+				sortUnit[j] = temp;
+			}
+			else if (sortUnit[i].distance == sortUnit[j].distance)
+			{//거리가 같으면 종족이름 먼저 비교 같으면 ID 비교
+				if (sortUnit[i].name < sortUnit[j].name)
+				{
+					UnitInfo temp = sortUnit[i];
+					sortUnit[i] = sortUnit[j];
+					sortUnit[j] = temp;
+				}
+				else if (sortUnit[i].name == sortUnit[j].name
+					&& sortUnit[i].unitID < sortUnit[j].unitID)
+				{
+					UnitInfo temp = sortUnit[i];
+					sortUnit[i] = sortUnit[j];
+					sortUnit[j] = temp;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < unitCount; i++)
+	{
+		printf("name : %c HP : %d MP : %d 좌표 : (%d,%d) ID : %c%04d 거리 : %d\n",
+			sortUnit[i].name, sortUnit[i].HP, sortUnit[i].MP,
+			sortUnit[i].x, sortUnit[i].y, sortUnit[i].name, sortUnit[i].unitID, sortUnit[i].distance);
+		
 	}
 }
 

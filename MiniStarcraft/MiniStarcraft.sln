@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniStarcraft", "MiniStarcr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniStarcraft_3_0319", "MiniStarcraft_3_0319\MiniStarcraft_3_0319.vcxproj", "{B5CBF298-116A-471C-B546-4F2D5A16CC24}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "temp", "temp\temp.vcxproj", "{36CB66AD-9411-4F9A-8CAA-58C334F623B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{B5CBF298-116A-471C-B546-4F2D5A16CC24}.Release|x64.Build.0 = Release|x64
 		{B5CBF298-116A-471C-B546-4F2D5A16CC24}.Release|x86.ActiveCfg = Release|Win32
 		{B5CBF298-116A-471C-B546-4F2D5A16CC24}.Release|x86.Build.0 = Release|Win32
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Debug|x64.ActiveCfg = Debug|x64
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Debug|x64.Build.0 = Debug|x64
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Debug|x86.ActiveCfg = Debug|Win32
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Debug|x86.Build.0 = Debug|Win32
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Release|x64.ActiveCfg = Release|x64
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Release|x64.Build.0 = Release|x64
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Release|x86.ActiveCfg = Release|Win32
+		{36CB66AD-9411-4F9A-8CAA-58C334F623B4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
