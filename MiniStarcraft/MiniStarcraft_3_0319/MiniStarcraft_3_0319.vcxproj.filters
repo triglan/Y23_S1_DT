@@ -4,5 +4,6 @@
     <ClCompile Include="MiniStar_3_1.c" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="MiniStar_3_2.c" />
+    <ClCompile Include="MiniStar_3_3.c" />
   </ItemGroup>
 </Project>

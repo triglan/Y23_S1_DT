@@ -38,6 +38,9 @@ typedef struct
 
 typedef struct
 {
+	char order;
+	char unit;
+
 	int x;
 	int y;
 
@@ -45,15 +48,10 @@ typedef struct
 	int y1;
 	int x2;
 	int y2;
-
-	char unit;
-	char order;
-	int distance;
-}OrderInfo;
-
+}UnitOrder;
 //맵
 UnitInfo board[UPDOWN][SIDE];
-OrderInfo orderL[30];
+UnitOrder OrderL[30];
 
 //유닛 생성 수
 int HydraCount = 0;
@@ -64,7 +62,6 @@ int TankCount = 0;
 int VesselCount = 0;
 
 int orderCount = 0;
-
 //유닛 정보
 void Unit_H(int x, int y);
 void Unit_Q(int x, int y);
@@ -75,12 +72,13 @@ void Unit_V(int x, int y);
 
 //유닛 초기 배치
 void StartBoard();
-int Distance(int x1, int y1, int x2, int y2);
 
+//scanf 조건검사 걸어줘 2~5번
 void Order(char command);
 void ShowOrderList();
 void Display();
 void DestroyAll(int x1, int y1, int x2, int y2);
+int Distance(int x1, int y1, int x2, int y2);
 void GetDistance(int x1, int y1, int x2, int y2);
 void FindWeakEnemy(int x1, int y1, int distance);
 void SortByDistance(int x1, int y1);
@@ -119,7 +117,7 @@ int main()
 				printf("잘못된 값.\n");
 				break;
 			}
-			DestroyAll(x1,y1,x2,y2);
+			DestroyAll(x1, y1, x2, y2);
 			break;
 
 		case '3':
@@ -129,7 +127,7 @@ int main()
 				printf("잘못된 값.\n");
 				break;
 			}
-			GetDistance(x1,y1,x2,y2);
+			GetDistance(x1, y1, x2, y2);
 			break;
 
 		case '4':
@@ -144,16 +142,16 @@ int main()
 				printf("해당 위치에 유닛이 없음.\n");
 				break;
 			}
-			FindWeakEnemy(x1,y1,distance);
+			FindWeakEnemy(x1, y1, distance);
 			break;
 		case '5':
 			scanf_s("%d %d", &x1, &y1);
-			if (x1 < 0 || x1 >= SIDE || y1 < 0 || y1 >= UPDOWN )
+			if (x1 < 0 || x1 >= SIDE || y1 < 0 || y1 >= UPDOWN)
 			{
 				printf("잘못된 값.\n");
 				break;
 			}
-			SortByDistance(x1,y1);
+			SortByDistance(x1, y1);
 			break;
 
 		case 'q':
@@ -163,294 +161,6 @@ int main()
 			break;
 		}
 	}
-}
-
-void Order(char command)
-{
-	int x;
-	int y;
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	char unit;
-
-	switch (command)
-	{
-	case 'p':
-		scanf_s("%d %d %c", &x, &y, &unit, 1);
-		if (orderCount >= 30)
-		{
-			printf("Order가 30번 넘게 호출 되었습니다.\n");
-			return;
-		}
-		if (x < 0 || x >= SIDE || y<0 || y >= UPDOWN)
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-		if (unit == 'h' || unit == 'q' || unit == 'd' || unit == 'm' || unit == 't' || unit == 'v')
-		{
-			orderL[orderCount].order = 'p';
-			orderL[orderCount].x = x;
-			orderL[orderCount].y = y;
-			orderL[orderCount].unit = unit;
-		}
-		else
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-		break;
-	case 'a':
-		scanf_s("%d %d", &x, &y);
-		if (orderCount >= 30)
-		{
-			printf("Order가 30번 넘게 호출 되었습니다.\n");
-			return;
-		}
-		if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-
-		orderL[orderCount].order = 'a';
-
-		orderL[orderCount].x = x;
-		orderL[orderCount].y = y;
-
-		break;
-	case 'm':
-		scanf_s("%d %d", &x, &y);
-		if (orderCount >= 30)
-		{
-			printf("Order가 30번 넘게 호출 되었습니다.\n");
-			return;
-		}
-		if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-		orderL[orderCount].order = 'm';
-
-		orderL[orderCount].x = x;
-		orderL[orderCount].y = y;
-		break;
-	case 's':
-		scanf_s("%d %d", &x, &y);
-		if (orderCount >= 30)
-		{
-			printf("Order가 30번 넘게 호출 되었습니다.\n");
-			return;
-		}
-		if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-		orderL[orderCount].order = 's';
-
-		orderL[orderCount].x = x;
-		orderL[orderCount].y = y;
-		break;
-	case 'S':
-		scanf_s("%d %d %d %d", &x1, &y1, & x2, &y2);
-		if (orderCount >= 30)
-		{
-			printf("Order가 30번 넘게 호출 되었습니다.\n");
-			return;
-		}
-		if (x1 < 0 || x1 >= SIDE || y1 < 0 || y1 >= UPDOWN || x2 < 0 || x2 >= SIDE || y2 < 0 || y2 >= UPDOWN)
-		{
-			printf("잘못된 값.\n");
-			return;
-		}
-		orderL[orderCount].order = 'S';
-
-		orderL[orderCount].x1 = x1;
-		orderL[orderCount].y1 = y1;
-		orderL[orderCount].x2 = x2;
-		orderL[orderCount].y2 = y2;
-
-		break;
-
-
-	default:
-		break;
-	}
-
-	orderCount++;
-}
-
-void ShowOrderList()
-{
-	for (int i = 0; i < orderCount; i++)
-	{
-		switch (orderL[i].order)
-		{
-		case 'p':
-			printf("/ %c %d %d %c /", orderL[i].order, orderL[i].x, orderL[i].y, orderL[i].unit);
-			break;
-		case 'a':
-		case 'm':
-		case 's':
-			printf("/ %c %d %d /", orderL[i].order, orderL[i].x, orderL[i].y);
-			break;
-		case 'S':
-			printf("/ %c %d %d %d %d/", orderL[i].order, orderL[i].x1, orderL[i].y1, orderL[i].x2, orderL[i].y2);
-			break;
-		default:
-			break;
-		}
-		if (i % 10 == 9)
-			printf("\n");
-	}
-	printf("\n");
-
-}
-
-void Display()
-{
-	for (int y = 0; y < UPDOWN; y++)
-	{
-		for (int x = 0; x < SIDE; x++)
-		{
-			if (board[y][x].life != 0)
-				printf("%c", board[y][x].name);
-			else
-				printf("+");
-		}
-		printf("\n");
-	}
-}
-
-void DestroyAll(int x1, int y1, int x2, int y2)
-{
-	for (int y = y1; y <= y2; y++)
-	{//TODO for (y = y1; y < y2; y++)로도 되는가
-		for (int x = x1; x <= x2; x++)
-		{
-			board[y][x].life = 0;
-		}
-	}
-}
-
-int Distance(int x1, int y1, int x2, int y2)
-{
-	int a = abs(x2 - x1);
-	int b = abs(y2 - y1);
-	
-	int distance = 0;
-	if (a > b)
-		distance = a;
-	else
-		distance = b;
-
-	return distance;
-}
-
-void GetDistance(int x1, int y1, int x2, int y2)
-{
-	int distance = Distance(x1, y1, x2, y2);
-	printf("거리 : %d\n", distance);
-}
-
-void FindWeakEnemy(int x1, int y1, int distance)
-{
-	//거리내에 있으면서 적이면서 빈땅이 아니면서
-	//HP < 최소값 만약 HP == 최소값이면 계속 저장
-	UnitInfo Enemy[100];
-
-	int minHP = 10000000;
-	int count = 0;
-
-	for (int y2 = 0; y2 < UPDOWN; y2++)
-	{
-		for (int x2 = 0; x2 < SIDE; x2++)
-		{
-			if (board[y2][x2].life != 0 && board[y2][x2].team != board[y1][x1].team
-				&& Distance(x1, y1, x2, y2) < distance)
-			{
-				if (board[y2][x2].HP < minHP)
-				{
-					count = 0;
-					minHP = board[y2][x2].HP;
-					Enemy[0] = board[y2][x2];
-					count++;
-				}
-				else if (board[y2][x2].HP == minHP)
-				{
-					Enemy[count] = board[y2][x2];
-					count++;
-				}
-			}
-
-		}
-	}
-
-	for (int i = 0; i < count; i++)
-	{
-		printf("name : %c // HP : %d // MP : %d // ID : %c%04d\n",
-			Enemy[i].name, Enemy[i].HP, Enemy[i].MP, Enemy[i].name, Enemy[i].unitID);
-	}
-
-}
-
-void SortByDistance(int x1, int y1)
-{
-	UnitInfo SortUnit[SIDE * UPDOWN];
-	int unitCount = 0;
-	for (int y2 = 0; y2 < UPDOWN; y2++)
-	{
-		for (int x2 = 0; x2 < SIDE; x2++)
-		{
-			if (board[y2][x2].life != 0)
-			{
-				SortUnit[unitCount] = board[y2][x2];
-				SortUnit[unitCount].distance = Distance(x1, y1, x2, y2);
-				unitCount++;
-			}
-		}
-	}
-
-	//거리가 가까우면서 같으면 ID순으로
-	for (int i = 0; i < unitCount; i++)
-	{
-		for (int j = 0; j < unitCount; j++)
-		{
-			if (SortUnit[i].distance< SortUnit[j].distance)
-			{
-				UnitInfo temp = SortUnit[i];
-				SortUnit[i] = SortUnit[j];
-				SortUnit[j] = temp;
-			}
-			else if (SortUnit[i].distance == SortUnit[j].distance)
-			{
-				if (SortUnit[i].name < SortUnit[j].name)
-				{
-					UnitInfo temp = SortUnit[i];
-					SortUnit[i] = SortUnit[j];
-					SortUnit[j] = temp;
-				}
-				else if (SortUnit[i].name == SortUnit[j].name &&
-					SortUnit[i].unitID < SortUnit[j].unitID)
-				{
-					UnitInfo temp = SortUnit[i];
-					SortUnit[i] = SortUnit[j];
-					SortUnit[j] = temp;
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < unitCount; i++)
-	{
-		printf("name : %c // HP : %d // MP : %d // ID : %c%04d // 거리 : %d\n",
-			SortUnit[i].name, SortUnit[i].HP, SortUnit[i].MP, SortUnit[i].name, SortUnit[i].unitID, SortUnit[i].distance);
-	}
-
 }
 
 void StartBoard()
@@ -482,6 +192,244 @@ void StartBoard()
 	Unit_D(39, 16);
 	Unit_D(39, 15);
 }
+
+void Order(char command)
+{
+	int x, y;
+	int x1, y1;
+	int x2, y2;
+	char unit;
+	switch (command)
+	{
+	case 'p':
+		scanf_s("%d %d %c", &x, &y, &unit);
+		if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
+		{
+			printf("잘못된 값 p\n");
+			return;
+		}
+		if (orderCount >= 30)
+		{
+			printf("OrderCount가 30개를 넘음\n");
+			return;
+		}
+		else if (unit == 'h' || unit == 'q' || unit == 'd' || unit == 'm' || unit == 't' || unit == 'v')
+		{
+			OrderL[orderCount].order = 'p';
+			OrderL[orderCount].unit = unit;
+			OrderL[orderCount].x = x;
+			OrderL[orderCount].y = y;
+		}
+		else
+		{
+			printf("잘못된 값 p\n");
+			return;
+		}
+		break;
+	case 'm':
+	case 'a':
+	case 's':
+		scanf_s("%d %d", &x, &y);
+		if (x < 0 || x >= SIDE || y < 0 || y >= UPDOWN)
+		{
+			printf("잘못된 값 p\n");
+			return;
+		}
+		if (orderCount >= 30)
+		{
+			printf("OrderCount가 30개를 넘음\n");
+			return;
+		}
+		OrderL[orderCount].order = command;//TODO : 맞음?
+		OrderL[orderCount].x = x;
+		OrderL[orderCount].y = y;
+		break;
+	case 'S':
+		scanf_s("%d %d %d %d", &x1, &y1, &x2, &y2);
+		if (x1 < 0 || x1 >= SIDE || y1 < 0 || y1 >= UPDOWN || x2 < 0 || x2 >= SIDE || y2 < 0 || y2 >= UPDOWN)
+		{
+			printf("잘못된 값 p\n");
+			return;
+		}
+		if (orderCount >= 30)
+		{
+			printf("OrderCount가 30개를 넘음\n");
+			return;
+		}
+		OrderL[orderCount].order = command;//TODO : 맞음?
+		OrderL[orderCount].x1 = x1;
+		OrderL[orderCount].y1 = y1;
+		OrderL[orderCount].x2 = x2;
+		OrderL[orderCount].y2 = y2;
+		break;
+	default:
+		break;
+	}
+
+	orderCount++;
+}
+
+void ShowOrderList()
+{
+	for (int i = 0; i < orderCount; i++)
+	{
+		switch (OrderL[i].order)
+		{
+		case 'p':
+			printf("/ %c %d %d %c /", OrderL[i].order, OrderL[i].x, OrderL[i].y, OrderL[i].unit);
+			break;
+		case 'a':
+		case 'm':
+		case 's':
+			printf("/ %c %d %d /", OrderL[i].order, OrderL[i].x, OrderL[i].y);
+			break;
+		case 'S':
+			printf("/ %c %d %d %d %d /", OrderL[i].order, OrderL[i].x1, OrderL[i].y1, OrderL[i].x2, OrderL[i].y2);
+			break;
+		default:
+			break;
+		}
+		if (i % 10 == 9)
+			printf("\n");
+	}
+	printf("\n");
+
+}
+
+void Display()
+{
+	for (int y = 0; y < UPDOWN; y++)
+	{
+		for (int x = 0; x < SIDE; x++)
+		{
+			if (board[y][x].life != 0)
+				printf("%c", board[y][x].name);
+			else
+				printf("+");
+		}
+		printf("\n");
+	}
+}
+
+void DestroyAll(int x1, int y1, int x2, int y2)
+{
+	for (int y = y1; y <= y2; y++)
+	{
+		for (int x = x1; x <= x2; x++)
+		{
+			board[y][x].life = 0;
+		}
+	}
+}
+
+int Distance(int x1, int y1, int x2, int y2)
+{
+	int a = abs(y2 - y1);
+	int b = abs(x2 - x1);
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+
+void GetDistance(int x1, int y1, int x2, int y2)
+{
+	int distance = Distance(x1, y1, x2, y2);
+	printf("거리 : %d", distance);
+}
+
+void FindWeakEnemy(int x1, int y1, int distance)
+{
+	UnitInfo Enemy[100];
+	int minHP = 100000000000;
+	int minCount = 0;
+	//거리내에 있으면서 적이면서 빈땅아님
+	//HP < 최소값 새로 넣기 HP == 최소값 하나 더 넣기
+
+	for (int y2 = 0; y2 < UPDOWN; y2++)
+	{
+		for (int x2 = 0; x2 < SIDE; x2++)
+		{
+			if (board[y2][x2].life != 0 && board[y2][x2].team != board[y1][x1].team
+				&& Distance(x1, y1, x2, y2) < distance)
+			{
+				if (board[y2][x2].HP < minHP)
+				{
+					minHP = board[y2][x2].HP;
+					Enemy[0] = board[y2][x2];
+					minCount = 1;
+				}
+				else if (board[y2][x2].HP == minHP)
+				{
+					Enemy[minCount] = board[y2][x2];
+					minCount++;
+				}
+			}
+		}
+	}
+
+
+	for (int i = 0; i < minCount; i++)
+	{
+		printf("name : %c // HP : %d // MP %d // ID : %c%04d\n",
+			Enemy[i].name, Enemy[i].HP, Enemy[i].MP, Enemy[i].name, Enemy[i].unitID);
+	}
+}
+
+void SortByDistance(int x1, int y1)
+{
+	UnitInfo Sort[SIDE * UPDOWN];
+	int count = 0;
+	for (int y2 = 0; y2 < UPDOWN; y2++)
+	{
+		for (int x2 = 0; x2 < SIDE; x2++)
+		{
+			if (board[y2][x2].life != 0)
+			{
+				Sort[count] = board[y2][x2];
+				Sort[count].distance = Distance(x1, y1, x2, y2);
+				count++;
+			}
+		}
+	}
+	//거리가 가까우면
+	//거리가 같으면 이름 먼저 그다음 ID
+	for (int i = 0; i < count; i++)
+	{
+		for (int j = 0; j < count; j++)
+		{
+			if (Sort[i].distance < Sort[j].distance)
+			{
+				UnitInfo temp = Sort[i];
+				Sort[i] = Sort[j];
+				Sort[j] = temp;
+			}
+			else if (Sort[i].distance == Sort[j].distance)
+			{
+				if (Sort[i].name < Sort[j].name)
+				{
+					UnitInfo temp = Sort[i];
+					Sort[i] = Sort[j];
+					Sort[j] = temp;
+				}
+				else if (Sort[i].name == Sort[j].name
+					&& Sort[i].unitID < Sort[j].unitID)
+				{
+					UnitInfo temp = Sort[i];
+					Sort[i] = Sort[j];
+					Sort[j] = temp;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < count; i++)
+	{
+		printf("name : %c // HP : %d // MP %d // ID : %c%04d // 거리 : %d\n",
+			Sort[i].name, Sort[i].HP, Sort[i].MP, Sort[i].name, Sort[i].unitID, Sort[i].distance);
+	}
+}
+
 
 void Unit_H(int x, int y)
 {
