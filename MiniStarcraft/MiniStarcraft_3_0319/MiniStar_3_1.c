@@ -1,10 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 //scanf 검사시 이상한 수 들어가면 ERROR
-//ShowOrderList()에 30개 이상 들어가면 교환
-//Find, Sort 만들기
+//ShowOrderList()에 30개 이상 들어가면 교환 혹은 금지
+
 #include <stdio.h>
 #include <Windows.h>
-#include <string.h>
 #include <math.h>
 
 //종족값
@@ -115,13 +114,17 @@ int main()
 	
 	int x;
 	int y;
+
+	int x1, y1;
+	int x2, y2;
+
 	int surroundDistance;
 	while (continueGame)
 	{
-		command = 0;
 
-		ShowOrderList();
+		//if잘못된값 == true print 잘못된값
 		Display();
+		printf("명령어 (order(m,a,s,S,p), f, r, d, D) : ");
 		scanf_s(" %c", &command);
 		system("cls");
 		switch (command)
@@ -134,18 +137,55 @@ int main()
 			Order(command);
 			break;
 
+		case 'D':
+			scanf_s("%d %d %d %d", &x1, &y1, &x2, &y2);
+			if (x1 < 0 || x1>SIDE || y1 < 0 || y1 > UPDOWN || x2 < 0 || x2>SIDE || y2 < 0 || y2 > UPDOWN)
+			{
+				printf("잘못된 입력 값입니다.\n");
+				break;
+			}
+
+			DestroyAll(x1, y1, x2, y2);
+			break;
+		case 'd':
+			scanf_s("%d %d %d %d", &x1, &y1, &x2, &y2);
+			if (x1 < 0 || x1>SIDE || y1 < 0 || y1 > UPDOWN || x2 < 0 || x2>SIDE || y2 < 0 || y2 > UPDOWN)
+			{
+				printf("잘못된 입력 값입니다.\n");
+				break;
+			}
+
+			GetDistance(x1, y1, x2, y2);
+			break;
+
 		case 'f':
 			scanf_s("%d %d %d", &x, &y, &surroundDistance);
+			if (x < 0 || x>SIDE || y<0 || y>UPDOWN || surroundDistance<0)
+			{
+				printf("잘못된 입력 값입니다.\n");
+				break;
+			}
 
 			FindWeakEnemy(x, y, surroundDistance);
 			break;
 
 		case 'r':
 			scanf_s("%d %d", &x, &y);
+			if (x < 0 || x>SIDE || y < 0 || y > UPDOWN)
+			{
+				printf("잘못된 입력 값입니다.\n");
+				break;
+			}
 
 			SortByDistance(x, y);
 			break;
+
+		case 'g':
+			ShowOrderList();
+
+			break;
 		default:
+			printf("잘못된 입력 값입니다.D\n");
 			break;
 		}
 	}
@@ -197,7 +237,7 @@ void Display()
 		}
 		printf("\n");
 	}
-}
+ }
 
 void ShowOrderList()
 {
@@ -225,7 +265,7 @@ void ShowOrderList()
 		default:
 			break;
 		}
-		if (i % 10 == 0 && i != 0)
+		if (i % 10 == 9)
 			printf("\n");
 		i++;
 	}
@@ -235,6 +275,8 @@ void ShowOrderList()
 
 void Order(char command)
 {
+
+
 	inputX = 0;
 	inputY = 0;
 	inputX1 = 0;
@@ -247,7 +289,21 @@ void Order(char command)
 	{
 	case'p':
 		scanf_s("%d %d %c", &inputX, &inputY, &inputUnit, 1);
-
+		if (inputX < 0 || inputX>SIDE || inputY < 0 || inputY > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (inputUnit == 'h' || inputUnit == 'q' || inputUnit == 'd' || inputUnit == 'm' || inputUnit == 't' || inputUnit == 'v')
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 		orderL[orderCount].order = 'p';
 
 		orderL[orderCount].x = inputX;
@@ -258,6 +314,16 @@ void Order(char command)
 
 	case 's':
 		scanf_s("%d %d", &inputX, &inputY);
+		if (inputX < 0 || inputX>SIDE || inputY < 0 || inputY > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 
 		orderL[orderCount].order = 's';
 
@@ -268,7 +334,16 @@ void Order(char command)
 
 	case 'S':
 		scanf_s("%d %d %d %d", &inputX1, &inputY1, &inputX2, &inputY2);
-
+		if (inputX1 < 0 || inputX1>SIDE || inputY1 < 0 || inputY1 > UPDOWN || inputX2 < 0 || inputX2>SIDE || inputY2 < 0 || inputY2 > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 		orderL[orderCount].order = 'S';
 
 		orderL[orderCount].x1 = inputX1;
@@ -280,7 +355,16 @@ void Order(char command)
 
 	case 'm':
 		scanf_s("%d %d", &inputX, &inputY);
-		
+		if (inputX < 0 || inputX>SIDE || inputY < 0 || inputY > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 		orderL[orderCount].order = 'm';
 
 		orderL[orderCount].x = inputX;
@@ -290,7 +374,16 @@ void Order(char command)
 
 	case 'a':
 		scanf_s("%d %d", &inputX, &inputY);
-
+		if (inputX < 0 || inputX>SIDE || inputY < 0 || inputY > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 		orderL[orderCount].order = 'a';
 
 		orderL[orderCount].x = inputX;
@@ -299,7 +392,16 @@ void Order(char command)
 		break;
 	case 'e':
 		scanf_s("%d %d %d %d", &inputX1, &inputY1, &inputX2, &inputY2);
-
+		if (inputX1 < 0 || inputX1>SIDE || inputY1 < 0 || inputY1 > UPDOWN || inputX2 < 0 || inputX2>SIDE || inputY2 < 0 || inputY2 > UPDOWN)
+		{
+			printf("잘못된 입력 값입니다.\n");
+			break;
+		}
+		if (orderCount >= 30)
+		{
+			printf("Order가 30개를 넘었습니다.\n");//TODO : 왜 프린트가 안되지?
+			return;
+		}
 		orderL[orderCount].order = 'e';
 
 		orderL[orderCount].x1 = inputX1;
@@ -356,8 +458,7 @@ void GetDistance(int x1, int y1, int x2, int y2)
 void FindWeakEnemy(int x1, int y1, int surroundDistance)
 {
 	int minHP = 100000000;
-	int minX[100] = { 0 };
-	int minY[100] = { 0 };
+	UnitInfo Enemy[100];
 
 	int minCount = 0;
 
@@ -373,18 +474,18 @@ void FindWeakEnemy(int x1, int y1, int surroundDistance)
 				{
 					for (int i = 0; i < minCount; i++)
 					{
-						minX[i] = 0;
-						minY[i] = 0;
+						Enemy[i].x = 0;
+						Enemy[i].y = 0;
 					}
 					minHP = board[y2][x2].HP;
-					minX[0] = x2;
-					minY[0] = y2;
+					Enemy[0] = board[y2][x2];
+					Enemy[0].distance = Distance(x1, y1, x2, y2);
 					minCount = 1;
 				}
 				else if (board[y2][x2].HP == minHP)
 				{
-					minX[minCount] = x2;
-					minY[minCount] = y2;
+					Enemy[minCount] = board[y2][x2];
+					Enemy[minCount].distance = Distance(x1, y1, x2, y2);
 					minCount++;
 				}
 			}
@@ -392,12 +493,12 @@ void FindWeakEnemy(int x1, int y1, int surroundDistance)
 	}
 
 	if (minCount != 0)
-	{
+	{	
 		for (int i = 0; i < minCount; i++)
 		{
-			printf("name : %c HP : %d MP : %d 좌표 : (%d,%d) ID : %c%04d\n",
-				board[minX[i]][minY[i]].name, board[minX[i]][minY[i]].HP, board[minX[i]][minY[i]].MP,
-				board[minX[i]][minY[i]].x, board[minX[i]][minY[i]].y, board[minX[i]][minY[i]].name, board[minX[i]][minY[i]].unitID);
+			printf("name : %c HP : %d MP : %d 좌표 : (%d,%d) ID : %c%04d 거리 : %d\n",
+				Enemy[i].name, Enemy[i].HP, Enemy[i].MP,
+				Enemy[i].x, Enemy[i].y, Enemy[i].name, Enemy[i].unitID, Enemy[i].distance);
 		}
 	}
 	else

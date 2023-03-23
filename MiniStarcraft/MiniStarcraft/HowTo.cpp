@@ -42,3 +42,9 @@ tempword
 //}
 //
 //int main()
+
+2303_03_23
+위에 2칸 공백 치우기V
+한번에 명령어 여러개 쳤는데 오타 났을 때 대처하기(아에 실행 x로  구상) -> 되는듯?
+scanf검사(destroyall //get distance//find weak enemy // order // sortby distance)
+order함수에 30개이상 안들어가게 만들기V
