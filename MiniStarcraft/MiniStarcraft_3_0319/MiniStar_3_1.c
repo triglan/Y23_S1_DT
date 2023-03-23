@@ -371,6 +371,11 @@ void FindWeakEnemy(int x1, int y1, int surroundDistance)
 			{
 				if (board[y2][x2].HP < minHP)
 				{
+					for (int i = 0; i < minCount; i++)
+					{
+						minX[i] = 0;
+						minY[i] = 0;
+					}
 					minHP = board[y2][x2].HP;
 					minX[0] = x2;
 					minY[0] = y2;
