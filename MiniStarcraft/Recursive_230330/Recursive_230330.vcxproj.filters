@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="temp.cpp" />
-    <ClCompile Include="newTemp.cpp" />
+    <ClCompile Include="Recursive.c" />
+    <ClCompile Include="source.cpp" />
+    <ClCompile Include="MiniStar_5_2.cpp" />
   </ItemGroup>
 </Project>
