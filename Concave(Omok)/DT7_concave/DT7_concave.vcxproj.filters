@@ -5,5 +5,6 @@
     <ClCompile Include="concave_7_2.c" />
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="concave_7_3.c" />
+    <ClCompile Include="concave_7_4.c" />
   </ItemGroup>
 </Project>

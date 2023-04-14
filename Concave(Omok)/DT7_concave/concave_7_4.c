@@ -16,17 +16,9 @@
 #define LINE 37
 
 int Stone[SIZE][SIZE] = { 0 };
-int tempStoneb[SIZE][SIZE * 2];
-int tempStonew[SIZE][SIZE * 2];
-
-int bline[SIZE] = { 0 };
-int wline[SIZE] = { 0 };
 
 int turn = 0;					// 0턴 초기화
 int inputX, inputY;
-
-int maxb = 0, maxw = 0, lineb[LINE] = { 0 }, linew[LINE] = { 0 };
-
 
 void StartStone();					// 초기값, 테스트 용
 void PrintStone(int printStone);	// 돌 출력
@@ -35,12 +27,11 @@ void CountStone();					// 검돌, 흰돌 몇개인지 세기
 void ScanTurn();					// 입력 받기
 bool IsSamePos();					// 중복 입력 받기
 void InputStone(int inputX, int inputY);// 돌 추가
-
 void ScanSide();
-void ScanLine();
-void RightUp();
-void RightDown();
-void printLine();
+void ScanDown();
+void ScanRightDown();
+void ScanRightUp();
+void ScanCount();
 
 int main()
 {
@@ -48,34 +39,44 @@ int main()
 	StartStone();
 	while (TRUE)
 	{
-		printLine();
-		printf("\n\n");
-		ScanSide();
-		printf("\n\n");
-
-		ScanLine();
-		printf("\n\n");
-		RightUp();
-		printf("\n\n");
-		RightDown();
-		printf("\n\n");
-
 		PrintBoard();	//바둑판 그리기
 		ScanTurn();	//스캔
 
-		scanf_s("%d %d", &inputX, &inputY);
+		scanf_s(" %c", &order, 1);
 		system("cls");
 
-		if (inputX<0 || inputX > SIZE || inputY < 0 || inputY > SIZE)
+		switch (order)
 		{
-			printf("잘못된 값입니다 다시 입력해 주세요.\n");
-			continue;
+		case '1':
+			ScanSide();
+			break;
+		case '2':
+			ScanDown();
+			break;
+		case '3':
+			ScanRightDown();
+			break;
+		case '4':
+			ScanRightUp();
+			break;
+		case '5':
+			ScanCount();
+			break;
+		case 'p':
+			scanf("%c %d %d", &order, &inputX, &inputY);
+			if (inputX<0 || inputX > SIZE || inputY < 0 || inputY > SIZE)
+			{
+				printf("잘못된 값입니다 다시 입력해 주세요.\n");
+				continue;
+			}
+			if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
+				continue;
+			InputStone(inputX, inputY);	//돌 입력
+		default:
+			break;
 		}
-		if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
-			continue;
 
 
-		InputStone(inputX, inputY);	//돌 출력
 		turn++;			//1턴 증가
 	}
 }
@@ -165,13 +166,9 @@ void CountStone()
 		for (int Side = 0; Side < SIZE; Side++)
 		{
 			if (Stone[UpDown][Side] == BLACK)
-			{
 				BlackStone++;
-			}
 			if (Stone[UpDown][Side] == WHITE)
-			{
 				WhiteStone++;
-			}
 		}
 	}
 	printf("검은 돌 : %d 흰 돌 : %d\n", BlackStone, WhiteStone);
@@ -196,286 +193,151 @@ void InputStone(int InputX, int InputY)
 	else
 		Stone[inputY][inputX] = WHITE;
 }
-
-void printLine()
+int lineb[LINE] = { 0 }, maxb = 0, linew[LINE] = { 0 }, maxw = 0, tempb[LINE], tempw[LINE];
+void ScanSide()
 {
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < LINE; i++)
 	{
-		bline[i] = 0;
-		wline[i] = 0;
+		lineb[i] = 0;
+		linew[i] = 0;
+		tempb[i] = 0;
+		tempw[i] = 0;
 	}
 	for (int y = 0; y < SIZE; y++)
 	{
 		for (int x = 0; x < SIZE; x++)
 		{
 			if (Stone[y][x] == BLACK)
-				bline[y]++;
-			if (Stone[y][x] == WHITE)
-				wline[y]++;
-		}
-	}
-	for (int i = 0; i < SIZE; i++)
-	{
-		printf("%d줄 BLACK : %d // WHITE : %d\n", i, bline[i], wline[i]);
-	}		
-}
-void ScanSide()
-{
-	for (int i = 0; i < SIZE; i++)
-	{
-		lineb[i] = 0;
-		linew[i] = 0;
-	}
-	for (int y = 0; y < SIZE; y++)
-	{
-		for (int x = 0; x < SIZE; x)
-		{
-			if (Stone[y][x] == BLACK)
 			{
 				while (1)
 				{
-					x++;
 					maxb++;
+					x++;
 					if (Stone[y][x] != BLACK)
 					{
-						if (maxb > lineb[y])
+						if (lineb[y] < maxb)
 						{
 							lineb[y] = maxb;
 							for (int i = 0; i < maxb; i++)
-							{
-								tempStoneb[y][i] = x - i;
-							}
+								tempb[i] = x - i - 1;
 						}
+						x--;
+						break;
+					}
+				}
+			}
+			if (Stone[y][x] == WHITE)
+			{
+				while (1)
+				{
+					maxw++;
+					x++;
+					if (Stone[y][x] != WHITE)
+					{
+						if (linew[y] < maxw)
+						{
+							linew[y] = maxw;
+							for (int i = 0; i < maxw; i++)
+								tempw[i] = x - i - 1;
+						}
+						x--;
 						break;
 					}
 				}
 				
 			}
-			else if (Stone[y][x] == WHITE)
-			{
-				while (1)
-				{
-					x++;
-					maxw++;
-					if (Stone[y][x] != WHITE)
-					{
-						if (maxw > linew[y])
-						{
-							linew[y] = maxw;
-							for (int i = 0; i < maxw; i++)
-							{
-								tempStonew[y][i] = x - i;
-							}
-						}
-						break;
-					}
-				}
-			}
-			else
-				x++;
 			maxb = 0;
 			maxw = 0;
 		}
 		if (lineb[y] == 0 && linew[y] == 0)
-		{
-			printf("EMPTY\n");
-		}
+			printf("EMPTY");
 		else if (lineb[y] > linew[y])
 		{
-			printf("%d번째 가로줄 BLACK : [", y);
+			printf("%d번째 가로줄 BLACK : ", y);
 			for (int i = 0; i < lineb[y]; i++)
-				printf("(%d,%d)", y, tempStoneb[y][i]);
-			printf("]\n");
+				printf("(%d,%d) ", y, tempb[i]);
 		}
 		else if (lineb[y] == linew[y])
 		{
-			printf("%d번째 가로줄 BLACK : [", y, lineb[y], linew[y]);
+			printf("%d번째 가로줄 BLACK : ", y);
 			for (int i = 0; i < lineb[y]; i++)
-				printf("(%d,%d)", y, tempStoneb[y][i]);
-			printf("] WHITE : [");
+				printf("(%d,%d) ", y, tempb[i]);
+
+			printf("WHITE : ", y, linew[y]);
 			for (int i = 0; i < linew[y]; i++)
-				printf("(%d,%d)", y, tempStonew[y][i]);
-			printf("]\n");
+				printf("(%d,%d) ", y, tempw[i]);
 		}
 		else
 		{
-			printf("%d번째 가로줄 WHITE : [", y);
+			printf("%d번째 가로줄 WHITE : ", y);
 			for (int i = 0; i < linew[y]; i++)
-				printf("(%d,%d)", y, tempStonew[y][i]);
-			printf("]\n");
+				printf("(%d,%d) ", y, tempw[i]);
 		}
+		printf("\n");
 	}
 }
-void ScanLine()//세로줄
+void ScanDown()
 {
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < LINE; i++)
 	{
 		lineb[i] = 0;
 		linew[i] = 0;
 	}
 	for (int x = 0; x < SIZE; x++)
 	{
-		for (int y = 0; y < SIZE; y)
+		for (int y = 0; y < SIZE; y++)
 		{
 			if (Stone[y][x] == BLACK)
 			{
 				while (1)
 				{
-					y++;
 					maxb++;
+					y++;
 					if (Stone[y][x] != BLACK)
 					{
-						if (maxb > lineb[x])
+						if (lineb[x] < maxb)
 							lineb[x] = maxb;
+						y--;
 						break;
 					}
 				}
-
 			}
-			else if (Stone[y][x] == WHITE)
+			if (Stone[y][x] == WHITE)
 			{
 				while (1)
 				{
-					y++;
 					maxw++;
+					y++;
 					if (Stone[y][x] != WHITE)
 					{
-						if (maxw > linew[x])
-							linew[x] = maxw;
-						break;
-					}
-				}
-			}
-			else
-				y++;
-			maxb = 0;
-			maxw = 0;
-		}
-		if (lineb[x] > linew[x])
-			printf("%d번째 세로줄 [BLACK : %d]\n", x, lineb[x]);
-		else if (lineb[x] == linew[x])
-			printf("%d번째 세로줄 [BLACK : %d] [WHITE : %d]\n", x, lineb[x], linew[x]);
-		else
-			printf("%d번째 세로줄[WHITE:% d]\n", x, linew[x]);
-	}
-}
-void RightUp()//우상향 그래프
-{
-	for (int i = 0; i < LINE; i++)
-	{
-		lineb[i] = 0;
-		linew[i] = 0;
-	}
-	for (int y = 0; y < LINE; y++)
-	{
-		for (int x = 0; x <= y; x++)
-		{
-			if (x < SIZE && y - x < SIZE)
-			{
-				if (Stone[y - x][x] == BLACK)
-				{
-					while (1)
-					{
-						x++;
-						maxb++;
-						if (Stone[y - x][x] != BLACK)
-						{
-							if (maxb > lineb[y])
-								lineb[y] = maxb;
-							x--;
-							break;
-						}
-					}
-
-				}
-				else if (Stone[y - x][x] == WHITE)
-				{
-					while (1)
-					{
-						x++;
-						maxw++;
-						if (Stone[y - x][x] != WHITE)
-						{
-							if (maxw > linew[y])
-								linew[y] = maxw;
-							x--;
-							break;
-						}
-					}
-				}
-			}
-
-			maxb = 0;
-			maxw = 0;
-		}
-		
-		if (lineb[y] > linew[y])
-			printf("%d번째 우상향 대각선 [BLACK : %d]\n", y, lineb[y]);
-		else if (lineb[y] == linew[y])
-			printf("%d번째 우상향 대각선 [BLACK : %d] [WHITE : %d]\n", y, lineb[y], linew[y]);
-		else
-			printf("%d번째 우상향 대각선 [WHITE:% d]\n", y, linew[y]);
-	}
-}
-void RightDown()//우하향 그래프
-{
-	for (int i = 0; i < LINE; i++)
-	{
-		lineb[i] = 0;
-		linew[i] = 0;
-	}
-	for (int x = SIZE - 1; x >= 0; x--)
-	{
-		for (int y = 0; y < SIZE - x; y++)
-		{
-			if (Stone[y][x + y] == BLACK)
-			{
-				while (1)
-				{
-					y++;
-					maxb++;
-					if (Stone[y][x + y] != BLACK)
-					{
-						if (maxb > lineb[x])
-							lineb[x] = maxb;
-						y--;
-						break;
-					}
-				}
-
-			}
-			else if (Stone[y][x + y] == WHITE)
-			{
-				while (1)
-				{
-					y++;
-					maxw++;
-					if (Stone[y][x + y] != WHITE)
-					{
-						if (maxw > linew[x])
+						if (linew[x] < maxw)
 							linew[x] = maxw;
 						y--;
 						break;
 					}
 				}
+
 			}
 			maxb = 0;
 			maxw = 0;
 		}
-		if (lineb[x] > linew[x])
-			printf("x%d번째 우하향 대각선 [BLACK : %d]\n", x, lineb[x]);
-		else if (lineb[x] == linew[x])
-			printf("x%d번째 우하향 대각선 [BLACK : %d] [WHITE : %d]\n", x, lineb[x], linew[x]);
-		else
-			printf("x%d번째 우하향 대각선[WHITE:% d]\n", x, linew[x]);
-	}
 
+		if (lineb[x] > linew[x])
+			printf("%d번째 가로줄 BLACK : %d\n", x, lineb[x]);
+		else if (lineb[x] == linew[x])
+			printf("%d번째 가로줄 BLACK : %d WHITE : %d\n", x, lineb[x], linew[x]);
+		else
+			printf("%d번째 가로줄 WHITE : %d\n", x, linew[x]);
+	}
+}
+void ScanRightDown()//우하향
+{//19,0 20, 1
 	for (int i = 0; i < LINE; i++)
 	{
 		lineb[i] = 0;
 		linew[i] = 0;
 	}
-	for (int y = 1; y < SIZE; y++)
+	for (int y = 0; y < SIZE; y++)
 	{
 		for (int x = 0; x < SIZE - y; x++)
 		{
@@ -483,41 +345,182 @@ void RightDown()//우하향 그래프
 			{
 				while (1)
 				{
-					x++;
 					maxb++;
+					x++;
 					if (Stone[x + y][x] != BLACK)
 					{
-						if (maxb > lineb[y])
+						if (lineb[y] < maxb)
 							lineb[y] = maxb;
+						x--;
+						break;
+					}
+				}
+			}
+			if (Stone[x + y][x] == WHITE)
+			{
+				while (1)
+				{
+					maxw++;
+					x++;
+					if (Stone[x + y][x] != WHITE)
+					{
+						if (linew[y] < maxw)
+							linew[y] = maxw;
 						x--;
 						break;
 					}
 				}
 
 			}
-			else if (Stone[x + y][x] == WHITE)
+			maxb = 0;
+			maxw = 0;
+		}
+
+		if (lineb[y] > linew[y])
+			printf("y%d번째 우하향 대각선 BLACK : %d\n", y, lineb[y]);
+		else if (lineb[y] == linew[y])
+			printf("y%d번째 우하향 대각선 BLACK : %d WHITE : %d\n", y, lineb[y], linew[y]);
+		else
+			printf("y%d번째 우하향 대각선 WHITE : %d\n", y, linew[y]);
+	}
+	for (int i = 0; i < LINE; i++)
+	{
+		lineb[i] = 0;
+		linew[i] = 0;
+	}
+	for (int x = 1; x < SIZE; x++)
+	{//19,0 20,1
+		for (int y = 0; y < SIZE - x; y++)
+		{
+			if (Stone[y][x + y] == BLACK)
 			{
 				while (1)
 				{
-					x++;
-					maxw++;
-					if (Stone[x + y][x] != WHITE)
+					maxb++;
+					y++;
+					if (Stone[y][x + y] != BLACK)
 					{
-						if (maxw > linew[y])
-							linew[y] = maxw;
-						x--;
+						if (lineb[x] < maxb)
+							lineb[x] = maxb;
+						y--;
 						break;
 					}
+				}
+			}
+			if (Stone[y][x + y] == WHITE)
+			{
+				while (1)
+				{
+					maxw++;
+					y++;
+					if (Stone[y][x + y] != WHITE)
+					{
+						if (linew[x] < maxw)
+							linew[x] = maxw;
+						y--;
+						break;
+					}
+				}
+
+			}
+			maxb = 0;
+			maxw = 0;
+		}
+
+		if (lineb[x] > linew[x])
+			printf("x%d번째 우하향 대각선 BLACK : %d\n", x, lineb[x]);
+		else if (lineb[x] == linew[x])
+			printf("x%d번째 우하향 대각선 BLACK : %d WHITE : %d\n", x, lineb[x], linew[x]);
+		else
+			printf("x%d번째 우하향 대각선 WHITE : %d\n", x, linew[x]);
+	}
+
+
+}
+void ScanRightUp()//우상향
+{//3,0 0,3
+	for (int i = 0; i < LINE; i++)
+	{
+		lineb[i] = 0;
+		linew[i] = 0;
+	}
+	for (int y = 0; y < LINE; y++)
+	{
+		for (int x = 0; x < LINE; x++)
+		{
+			if (x >= 0 && x < SIZE && y - x >= 0 && y - x < SIZE)
+			{
+				if (Stone[y - x][x] == BLACK)
+				{
+					while (1)
+					{
+						maxb++;
+						x++;
+						if (Stone[y - x][x] != BLACK)
+						{
+							if (lineb[y] < maxb)
+								lineb[y] = maxb;
+							x--;
+							break;
+						}
+					}
+				}
+				if (Stone[y - x][x] == WHITE)
+				{
+					while (1)
+					{
+						maxw++;
+						x++;
+						if (Stone[y - x][x] != WHITE)
+						{
+							if (linew[y] < maxw)
+								linew[y] = maxw;
+							x--;
+							break;
+						}
+					}
+
 				}
 			}
 			maxb = 0;
 			maxw = 0;
 		}
-		if (lineb[y] > linew[y])
-			printf("y%d번째 우하향 대각선 [BLACK : %d]\n", y, lineb[y]);
-		else if (lineb[y] == linew[y])
-			printf("y%d번째 우하향 대각선 [BLACK : %d] [WHITE : %d]\n", y, lineb[y], linew[y]);
+		if (y < SIZE)
+		{
+			if (lineb[y] > linew[y])
+				printf("y%d번째 우상향 대각선 BLACK : %d\n", y, lineb[y]);
+			else if (lineb[y] == linew[y])
+				printf("y%d번째 우상향 대각선 BLACK : %d WHITE : %d\n", y, lineb[y], linew[y]);
+			else
+				printf("y%d번째 우상향 대각선 WHITE : %d\n", y, linew[y]);
+		}
 		else
-			printf("y%d번째 우하향 대각선[WHITE:% d]\n", y, linew[y]);
+		{
+			if (lineb[y] > linew[y])
+				printf("x%d번째 우상향 대각선 BLACK : %d\n", y - SIZE + 1, lineb[y]);
+			else if (lineb[y] == linew[y])
+				printf("x%d번째 우상향 대각선 BLACK : %d WHITE : %d\n", y - SIZE + 1, lineb[y], linew[y]);
+			else
+				printf("x%d번째 우상향 대각선 WHITE : %d\n", y - SIZE + 1, linew[y]);
+		}
+	}
+}
+void ScanCount()
+{
+	for (int i = 0; i < LINE; i++)
+	{
+		lineb[i] = 0;
+		linew[i] = 0;
+	}
+	for (int y = 0; y < SIZE; y++)
+	{
+		for (int x = 0; x < SIZE; x++)
+		{
+			if (Stone[y][x] == BLACK)
+				lineb[y]++;
+			if (Stone[y][x] == WHITE)
+				linew[y]++;
+		}
+		printf("%d번째 줄 검은 돌 : %d 흰 돌 : %d\n", y, lineb[y], linew[y]);
 	}
 }
