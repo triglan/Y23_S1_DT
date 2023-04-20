@@ -140,6 +140,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\230413_연결리스트2\연결리스트 2.cpp" />
+    <ClCompile Include="..\230413_연결리스트2\연결리스트cpp.cpp" />
     <ClCompile Include="스택과 큐.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

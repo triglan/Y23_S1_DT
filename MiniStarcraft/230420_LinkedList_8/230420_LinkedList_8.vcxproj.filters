@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="miniStar_8_1.c" />
+    <ClCompile Include="source.cpp" />
+    <ClCompile Include="sortbyID예시.cpp" />
+    <ClCompile Include="miniStar_8_2.c" />
+  </ItemGroup>
+</Project>

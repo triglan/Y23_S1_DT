@@ -448,7 +448,8 @@ void ScanRightUp()//¿ì»óÇâ
 	{
 		for (int x = 0; x < LINE; x++)
 		{
-			if (x >= 0 && x < SIZE && y - x >= 0 && y - x < SIZE)
+			if (x >= 0 && x < SIZE && y - x >=
+				0 && y - x < SIZE)
 			{
 				if (Stone[y - x][x] == BLACK)
 				{
