@@ -198,7 +198,7 @@ void FindWeakEnemy(int x, int y, int distance, struct Info* head)
 				minHP = p->HP;
 				minCount = 0;
 				enemy[minCount++] = *p;
-			}
+			}  
 			else if (p->HP == minHP)
 				enemy[minCount++] = *p;
 		}
@@ -425,7 +425,7 @@ void MakeUL(struct Info* head)
 void Unit(char unit, int x, int y, int hp, int mp, struct Info* target)
 {
 	//»õ À¯´Ö »ý¼º
-	struct Info* newUnit = malloc(sizeof(struct Info));
+	struct Info* newUnit = (Info*)malloc(sizeof(struct Info));
 	if (unit == 'h' || unit == 'H') {
 		newUnit->name = 'H';
 		newUnit->unitID = HydraCount++;
