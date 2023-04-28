@@ -1,7 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
-//바두간 그리기 -> 좌표 입력받기 -> 중복 확인 -> 돌 넣기 -> 돌의 개수 출력
+
 #include <stdio.h>
 #include <Windows.h>
+
 //bool 타입
 #define bool int
 #define TRUE 1
@@ -13,28 +14,24 @@
 //바둑판 크기
 #define SIZE 19
 #define LINE 37
-#define MAX 1000
 
-int Stack[MAX];
-int tempStack[MAX];
-int top = -1;
-int temptop = -1;
+FILE* fp, * tfp;
+int Stack[1000], top = -1;
+int tStack[1000], ttop = -1;
 
 int Stone[SIZE][SIZE] = { 0 };
 int lineb[SIZE] = { 0 }, linew[SIZE] = { 0 }, maxb = 0, maxw = 0, tempb[SIZE][SIZE * 2], tempw[SIZE][SIZE * 2];
 
 int turn = 0;					// 0턴 초기화
-
-FILE* fp;
-FILE* tempfp;
+int inputX, inputY;
 
 void StartStone();					// 초기값, 테스트 용
 void PrintStone(int printStone);	// 돌 출력
 void PrintBoard();					// 보드판 출력
 void CountStone();					// 검돌, 흰돌 몇개인지 세기
 void ScanTurn();					// 입력 받기
-bool IsSamePos(int x, int y);					// 중복 입력 받기
-void InputStone(int x, int y);		// 돌 추가
+bool IsSamePos();					// 중복 입력 받기
+void InputStone(int inputX, int inputY);// 돌 추가
 
 void ScanSide();
 void ScanLine();
@@ -42,22 +39,63 @@ void ScanRightUp();
 void ScanRightDown();
 void ScanCount();
 
-void InputFile();
-void OutputFile();
+void SaveGame();
+void LoadGame();
 
-void push(int item);
-void temppush(int item);
-int pop();
-void Backspace();
-void BackBackspace();
+void BackSpace();
+void BackBackSpace();
 
 int main()
 {
-	int x, y;
 	char order;
-	//StartStone();
 	while (TRUE)
 	{
+		printf("top : %d, ttop : %d\n", top, ttop);
+		PrintBoard();	//바둑판 그리기
+		ScanTurn();	//스캔
+
+		printf("\n명령어 : 1. 수 놓기(x,y) 5. 중복 돌 검사 : ");
+		scanf_s(" %c", &order, 1);
+		system("cls");
+		
+		switch (order)
+		{
+		case '1':
+		{
+			scanf_s("%d %d", &inputX, &inputY);
+			if (inputX<0 || inputX > SIZE || inputY < 0 || inputY > SIZE)
+			{
+				printf("잘못된 값입니다 다시 입력해 주세요.\n");
+				continue;
+			}
+			if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
+				break;
+			InputStone(inputX, inputY);	//돌 출력
+			break;
+		}
+		case '2':
+			SaveGame();
+			break;
+		case '3':
+			LoadGame();
+			break;
+		case 'u':
+			if (top <= -1)
+			{
+				printf("ㄴㄴ");
+				break;
+			}
+			BackSpace();
+			break;
+		case 'r':
+			if (ttop <= -1)
+			{
+				printf("ㄴㄴ");
+				break;
+			}
+			BackBackSpace();
+			break;
+		case '5':
 		{
 			ScanSide();
 			printf("\n");
@@ -70,112 +108,71 @@ int main()
 			ScanCount();
 			printf("\n\n");
 		}
-		PrintBoard();	//바둑판 그리기
-		scanf_s(" %c", &order);
-		switch (order)
-		{
-		case '1':
-			ScanTurn();	//스캔
-			scanf("%d %d", &x, &y);
-			if (x<0 || x > SIZE || y < 0 || y > SIZE)
-			{
-				printf("잘못된 값입니다 다시 입력해 주세요.\n");
-				continue;
-			}
-			if (IsSamePos(x, y) == TRUE)	//중복 확인 중복이면 while 다시 시작
-				continue;
-			InputStone(x, y);	//돌 출력
-			break;
-		case '2'://저장
-			InputFile();
-			break;
-		case '3'://불러오기
-			OutputFile();//파일 출력 테스트
-			break;
-		case '4':
-			Backspace();
-			break;
-		case '5':
-			BackBackspace();
-			break;
+		break;
 		default:
 			break;
 		}
-		system("cls");
+
 	}
 }
-void InputFile()//stack의 값을 파일에 넣는 함수
+void SaveGame()
 {
-	fp = fopen("test.txt", "w"); //test파일을 w(쓰기) 모드로 열기
+	fp = fopen("savegame.txt", "w");
 	for (int i = 0; i <= top; i++)
-	{
 		fprintf(fp, "%d\n", Stack[i]);
-	}
-	tempfp = fopen("temp.txt", "w");
-	for (int i = 0; i <= temptop; i++)
-	{
-		fprintf(tempfp, "%d\n", tempStack[i]);
-	}
+
+	tfp = fopen("tempgame.txt", "w");
+	for (int i = 0; i <= ttop; i++)
+		fprintf(tfp, "%d\n", tStack[i]);
+
 	fclose(fp);
-	fclose(tempfp);
+	fclose(tfp);
 }
-void OutputFile()//파일의 값을 1. stack에 넣고 2. 보드판에 반영하는 함수
+void LoadGame()
 {
 	turn = 0;
-	fp = fopen("test.txt", "r");
-	tempfp = fopen("temp.txt", "r");
-	int value = 0;
-	int count = 0;
-	int x, y;
-	while (fscanf(fp, "%d\n", &value) != EOF) { // 파일 끝까지 읽기
-		if (count % 2 == 0) {//짝수 일 떄
+	top = -1, ttop = -1;
+	for (int y = 0; y < SIZE; y++)
+	{
+		for (int x = 0; x < SIZE; x++)
+		{
+			Stone[y][x] = 0;
+		}
+	}
+	int value = 0, count = 0, x = 0, y = 0;
+	fp = fopen("savegame.txt", "r");
+	tfp = fopen("tempgame.txt", "r");
+	while (fscanf(fp, "%d\n", &value) != EOF) {
+		if (count % 2 == 0) {
 			x = value;
 			count++;
 		}
-		else {//홀수 일 때
+		else {
 			y = value;
 			InputStone(x, y);
 			count++;
 		}
 	}
 
-	value = 0;
-	while (fscanf(tempfp, "%d\n", &value) != EOF) { // 파일 끝까지 읽기
-		tempStack[++temptop] = value;
+	while (fscanf(tfp, "%d\n", &value) != EOF) {
+		tStack[++ttop] = value;
 	}
 }
-void Backspace() {//되돌리기
+void BackSpace(){
 	int x, y;
-	y = pop();
-	x = pop();
+	y = Stack[top--];
+	x = Stack[top--];
 	Stone[y][x] = 0;
-	tempStack[++temptop] = x;
-	tempStack[++temptop] = y;
+	tStack[++ttop] = x;
+	tStack[++ttop] = y;
 	turn--;
 }
-void BackBackspace() {//되돌리고 무효화
+void BackBackSpace(){
 	int x, y;
-	y = temppop();
-	x = temppop();
+	y = tStack[ttop--];
+	x = tStack[ttop--];
 	InputStone(x, y);
-	Stack[++top] = x;
-	Stack[++top] = y;
 }
-void push(int item) {
-	top = top + 1;
-	Stack[top] = item; // 스택에 데이터 추가
-}
-void temppush(int item) {
-	temptop = temptop + 1;
-	tempStack[temptop] = item; // 스택에 데이터 추가
-}
-int pop() {
-	return Stack[top--]; // 스택에서 데이터 삭제
-}
-int temppop() {
-	return tempStack[temptop--]; // 스택에서 데이터 삭제
-}
-
 void StartStone()
 {
 	Stone[1][1] = BLACK;
@@ -233,18 +230,18 @@ void PrintStone(int printStone)
 void PrintBoard()
 {
 	CountStone();
-	for (int y = 0; y < SIZE; y++)
+	for (int UpDown = 0; UpDown < SIZE; UpDown++)
 	{//상하 for문
-		for (int x = 0; x < SIZE; x++)
+		for (int Side = 0; Side < SIZE; Side++)
 		{//좌우 for문
-			PrintStone(Stone[y][x]);
+			PrintStone(Stone[UpDown][Side]);
 		}
 		printf("\n");
 	}
 }
-bool IsSamePos(int x, int y)
+bool IsSamePos()
 {
-	if (Stone[y][x] != BLANK)	// 공백칸이 아니라면
+	if (Stone[inputY][inputX] != BLANK)	// 공백칸이 아니라면
 	{
 		printf("이미 돌이 놓여 있습니다.\n");
 		return TRUE;
@@ -278,7 +275,7 @@ void ScanTurn()
 	{
 		printf("백돌");
 	}
-	printf(" 턴입니다. 수를 놓아 주십시오 가로[0~18] 세로[0~18] : ");
+	printf(" 턴입니다. 수를 놓아 주십시오 가로[0~18] 세로[0~18]");
 
 }
 void InputStone(int x, int y)
@@ -287,10 +284,11 @@ void InputStone(int x, int y)
 		Stone[y][x] = BLACK;
 	else
 		Stone[y][x] = WHITE;
-	push(x);
-	push(y);
+	Stack[++top] = x;
+	Stack[++top] = y;
+
 	turn++;			//1턴 증가
-}//(1,2)(3,4)
+}
 void ScanSide()
 {
 	for (int i = 0; i < SIZE; i++)

@@ -3,5 +3,6 @@
   <ItemGroup>
     <ClCompile Include="concave_9_1.c" />
     <ClCompile Include="source.c" />
+    <ClCompile Include="concave_9_2.c" />
   </ItemGroup>
 </Project>

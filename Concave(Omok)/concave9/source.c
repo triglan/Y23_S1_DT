@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-//바두간 그리기 -> 좌표 입력받기 -> 중복 확인 -> 돌 넣기 -> 돌의 개수 출력
+
 #include <stdio.h>
 #include <Windows.h>
 
@@ -17,6 +17,7 @@
 
 
 int Stone[SIZE][SIZE] = { 0 };
+int lineb[SIZE] = { 0 }, linew[SIZE] = { 0 }, maxb = 0, maxw = 0, tempb[SIZE][SIZE * 2], tempw[SIZE][SIZE * 2];
 
 int turn = 0;					// 0턴 초기화
 int inputX, inputY;
@@ -37,38 +38,50 @@ void ScanCount();
 
 int main()
 {
-	StartStone();
+	char order;
 	while (TRUE)
 	{
-		ScanSide();
-		printf("\n");
-		ScanLine();
-		printf("\n");
-		ScanRightUp();
-		printf("\n");
-		ScanRightDown();
-		printf("\n");
-		ScanCount();
-		printf("\n\n");
+
 		PrintBoard();	//바둑판 그리기
-
 		ScanTurn();	//스캔
-		scanf("%d %d", &inputX, &inputY);
-		system("cls");
 
-		if (inputX<0 || inputX > SIZE || inputY < 0 || inputY > SIZE)
+		printf("명령어 : 1. 돌 놓기(x,y) 5. 중복 돌 검사 : ");
+		scanf_s(" %c", &order, 1);
+		switch (order)
 		{
-			printf("잘못된 값입니다 다시 입력해 주세요.\n");
-			continue;
+		case '1':
+		{
+			scanf_s("%d %d", &inputX, &inputY);
+			system("cls");
+
+			if (inputX<0 || inputX > SIZE || inputY < 0 || inputY > SIZE)
+			{
+				printf("잘못된 값입니다 다시 입력해 주세요.\n");
+				continue;
+			}
+			if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
+				break;
+			InputStone(inputX, inputY);	//돌 출력
+			break;
 		}
-		if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
-			continue;
+		case '5':
+		{
+			ScanSide();
+			printf("\n");
+			ScanLine();
+			printf("\n");
+			ScanRightUp();
+			printf("\n");
+			ScanRightDown();
+			printf("\n");
+			ScanCount();
+			printf("\n\n");
+		}
+			break;
+		default:
+			break;
+		}
 
-
-
-		InputStone(inputX, inputY);	//돌 출력
-
-		turn++;			//1턴 증가
 	}
 }
 
@@ -177,15 +190,14 @@ void ScanTurn()
 	printf(" 턴입니다. 수를 놓아 주십시오 가로[0~18] 세로[0~18] : ");
 
 }
-void InputStone(int InputX, int InputY)
+void InputStone(int x, int y)
 {
 	if (turn % 2 == 0)	//흑돌 턴일 때
-		Stone[inputY][inputX] = BLACK;
+		Stone[y][x] = BLACK;
 	else
-		Stone[inputY][inputX] = WHITE;
+		Stone[y][x] = WHITE;
+	turn++;			//1턴 증가
 }
-
-int lineb[SIZE] = { 0 }, linew[SIZE] = { 0 }, maxb = 0, maxw = 0, tempb[SIZE][SIZE * 2], tempw[SIZE][SIZE * 2];
 void ScanSide()
 {
 	for (int i = 0; i < SIZE; i++)
