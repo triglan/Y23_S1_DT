@@ -104,7 +104,7 @@ void InputStone()	//해당 플레이어를 확인하고 scanf
 		printf("백돌");
 	}
 	printf("차례입니다. [열] (0~18) [행] (0~18) 순서로 입력해 주세요 : ");
-	scanf("%d %d", &inputX, &inputY);
+	scanf_s("%d %d", &inputX, &inputY);
 }
 
 bool isSamePos(int x, int y)	//중복확인
