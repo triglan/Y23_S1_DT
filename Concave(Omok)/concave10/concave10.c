@@ -297,7 +297,7 @@ void ScanSide()
 								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
 							}
-						}
+						}`
 					}
 				}
 				else if (linebmax[y].max < lineb[y][i].max) {
