@@ -75,9 +75,6 @@ int main()
 		ScanTurn();	//스캔
 
 		printf("명령어 : 돌 놓기(x,y) : ");
-		scanf_s(" %c", &order, 1);
-		system("cls");
-
 		scanf_s("%d %d", &inputX, &inputY);
 		system("cls");
 
@@ -269,8 +266,8 @@ void ScanSide()
 			}
 		}
 
-		//최종에 흰돌 집어넣기
-		if (linebc < 2) {
+		//최종에 돌 집어넣기
+		if (linebc < 1) {
 			linebmax[y].max = lineb[y][0].max;
 			linebmax[y].s = lineb[y][0].s;
 			linebmax[y].e = lineb[y][0].e;
@@ -296,7 +293,7 @@ void ScanSide()
 						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max - 1;
 
 						if ((lineb[y][i].max + lineb[y][i + 1].max - 1) == 3 || (lineb[y][i].max + lineb[y][i + 1].max - 1) == 4) {
-							for (int k = lineb[y][i].s; k <= lineb[y][i].e; k++){
+							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++){
 								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
 							}
@@ -310,7 +307,7 @@ void ScanSide()
 					linebmax[y].blank = -1;
 					linebmax[y].max = lineb[y][i].max;
 
-					if ((lineb[y][i].max + lineb[y][i + 1].max - 1) == 3 || (lineb[y][i].max + lineb[y][i + 1].max - 1) == 4) {
+					if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
 						for (int k = lineb[y][i].s; k <= lineb[y][i].e; k++) {
 							if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 								defStone[y][k] = 1;
@@ -346,7 +343,7 @@ void ScanSide()
 						linewmax[y].max = linew[y][i].max + linew[y][i + 1].max - 1;
 
 						if ((linew[y][i].max + linew[y][i + 1].max - 1) == 3 || (linew[y][i].max + linew[y][i + 1].max - 1) == 4) {
-							for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
+							for (int k = linew[y][i].s; k <= linew[y][i + 1].e; k++) {
 								if (k != linew[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
 							}
@@ -360,7 +357,7 @@ void ScanSide()
 					linewmax[y].blank = -1;
 					linewmax[y].max = linew[y][i].max;
 
-					if ((linew[y][i].max + linew[y][i + 1].max - 1) == 3 || (linew[y][i].max + linew[y][i + 1].max - 1) == 4) {
+					if (linew[y][i].max == 3 || linew[y][i].max == 4) {
 						for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
 							if (k != linew[y][i].e + 1)//공백 칸이 아니면
 								defStone[y][k] = 1;
@@ -460,7 +457,7 @@ void ScanLine()
 		}
 
 		//최종에 흰돌 집어넣기
-		if (linebc < 2) {
+		if (linebc < 1) {
 			linebmax[x].max = lineb[x][0].max;
 			linebmax[x].s = lineb[x][0].s;
 			linebmax[x].e = lineb[x][0].e;
@@ -468,9 +465,9 @@ void ScanLine()
 			linebmax[x].blank = -1;
 
 			if (lineb[x][0].max == 3 || lineb[x][0].max == 4){
-				for (int k = linew[x][0].s; k <= linew[x][0].e; k++) {
-					if (k != linew[x][0].e + 1)//공백 칸이 아니면
-						defStone[x][k] = 1;
+				for (int k = lineb[x][0].s; k <= lineb[x][0].e; k++) {
+					if (k != lineb[x][0].e + 1)//공백 칸이 아니면
+						defStone[k][x] = 1;
 				}
 			}
 		}
@@ -486,9 +483,9 @@ void ScanLine()
 						linebmax[x].max = lineb[x][i].max + lineb[x][i + 1].max - 1;
 
 						if ((lineb[x][i].max + lineb[x][i + 1].max - 1) == 3 || (lineb[x][i].max + lineb[x][i + 1].max - 1) == 4) {
-							for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
-								if (k != linew[x][i].e + 1)//공백 칸이 아니면
-									defStone[x][k] = 1;
+							for (int k = lineb[x][i].s; k <= lineb[x][i].e; k++) {
+								if (k != lineb[x][i].e + 1)//공백 칸이 아니면
+									defStone[k][x] = 1;
 							}
 						}
 					}
@@ -501,9 +498,9 @@ void ScanLine()
 					linebmax[x].max = lineb[x][i].max;
 
 					if ((lineb[x][i].max + lineb[x][i + 1].max - 1) == 3 || (lineb[x][i].max + lineb[x][i + 1].max - 1) == 4) {
-						for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
-							if (k != linew[x][i].e + 1)//공백 칸이 아니면
-								defStone[x][k] = 1;
+						for (int k = lineb[x][i].s; k <= lineb[x][i + 1].e; k++) {
+							if (k != lineb[x][i].e + 1)//공백 칸이 아니면
+								defStone[k][x] = 1;
 						}
 					}
 				}
@@ -520,7 +517,7 @@ void ScanLine()
 			if (linew[x][0].max == 3 || linew[x][0].max == 4) {
 				for (int k = linew[x][0].s; k <= linew[x][0].e; k++) {
 					if (k != linew[x][0].e + 1)//공백 칸이 아니면
-						defStone[x][k] = 1;
+						defStone[k][x] = 1;
 				}
 			}
 		}
@@ -538,7 +535,7 @@ void ScanLine()
 						if ((linew[x][i].max + linew[x][i + 1].max - 1) == 3 || (linew[x][i].max + linew[x][i + 1].max - 1) == 4) {
 							for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
 								if (k != linew[x][i].e + 1)//공백 칸이 아니면
-									defStone[x][k] = 1;
+									defStone[k][x] = 1;
 							}
 						}
 					}
@@ -552,8 +549,8 @@ void ScanLine()
 
 					if ((linew[x][i].max + linew[x][i + 1].max - 1) == 3 || (linew[x][i].max + linew[x][i + 1].max - 1) == 4) {
 						for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
-							if (k != linew[x][i].e + 1)//공백 칸이 아니면
-								defStone[x][k] = 1;
+							if (k != linew[x][i + 1].e + 1)//공백 칸이 아니면
+								defStone[k][x] = 1;
 						}
 					}
 				}
@@ -648,7 +645,6 @@ void ScanRightUp()
 		}
 		linecount++;
 	}
-
 	for (int x = 1; x < SIZE; x++)
 	{
 		linebc[x] = 0, linewc[x] = 0;
@@ -716,7 +712,12 @@ void ScanRightUp()
 						linebmax[y].blank = lineb[y][i].e + 1;
 						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max - 1;
 
-
+						if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
+							for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
+								if (k != linew[y][i].e + 1)//공백 칸이 아니면
+									defStone[y - k][k] = 1;
+							}
+						}
 					}
 				}
 				else if (linebmax[y].max < lineb[y][i].max) {
@@ -725,6 +726,13 @@ void ScanRightUp()
 					linebmax[y].line = y;
 					linebmax[y].blank = -1;
 					linebmax[y].max = lineb[y][i].max;
+
+					if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
+						for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
+							if (k != linew[y][i].e + 1)//공백 칸이 아니면
+								defStone[y - k][k] = 1;
+						}
+					}
 				}
 			}
 		}
