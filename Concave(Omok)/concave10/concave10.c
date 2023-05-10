@@ -4,8 +4,10 @@
 #include <Windows.h>
 
 /*
-	README : 2번 문제에서 3~4개짜리 돌만 방어하기로 하는데
-	이 때 3 3 돌은 6개짜리 돌로 취급해 모양이 바뀌지 않습니다.
+	2번 문제에서 3~4개짜리 돌만 방어하기로 하는데
+	이 때 예시로3공백3 돌등은 6개짜리 돌로 취급해 모양이 바뀌지 않습니다.
+	방어 돌 : 별
+	가장 긴 돌 표시 : 클로버
 */
 
 //bool 타입
@@ -31,12 +33,13 @@ typedef struct {
 
 int Stone[SIZE][SIZE] = { 0 };
 int defStone[SIZE][SIZE] = { 0 };
+int longStone[SIZE][SIZE] = { 0 };
 
 int turn = 0;					// 0턴 초기화
 int inputX, inputY;
 
 void StartStone();					// 초기값, 테스트 용
-void PrintStone(int stone, int def);	// 돌 출력
+void PrintStone(int stone, int def, int longs);	// 돌 출력
 void PrintBoard();					// 보드판 출력
 void CountStone();					// 검돌, 흰돌 몇개인지 세기
 void ScanTurn();					// 입력 받기
@@ -50,9 +53,6 @@ void ScanRightDown();
 
 int main()
 {
-	char order;
-
-	StartStone();
 	while (TRUE)
 	{
 		for (int y = 0; y < SIZE; y++)
@@ -60,6 +60,7 @@ int main()
 			for (int x = 0; x < SIZE; x++)
 			{
 				defStone[y][x] = 0;
+				longStone[y][x] = 0;
 			}
 		}
 		ScanSide();
@@ -84,9 +85,8 @@ int main()
 			continue;
 		}
 		if (IsSamePos() == TRUE)	//중복 확인 중복이면 while 다시 시작
-			break;
+			continue;
 		InputStone(inputX, inputY);	//돌 출력
-
 	}
 }
 void StartStone()
@@ -117,47 +117,37 @@ void StartStone()
 	Stone[0][13] = BLACK;
 	Stone[0][14] = BLACK;
 
-	Stone[2][3] = WHITE;
-	Stone[3][4] = WHITE;
-	Stone[4][5] = WHITE;
-	Stone[5][6] = WHITE;
-	Stone[6][6] = WHITE;
-	Stone[7][8] = WHITE;
-	Stone[8][9] = WHITE;
 
-	Stone[12][8] = WHITE;
 	Stone[11][9] = WHITE;
 	Stone[10][10] = WHITE;
 	Stone[10][11] = WHITE;
 	Stone[9][11] = WHITE;
 	Stone[8][12] = WHITE;
 
-	Stone[12][9] = WHITE;
-	Stone[12][10] = WHITE;
-	Stone[13][11] = WHITE;
-	Stone[14][12] = WHITE;
-	Stone[15][13] = WHITE;
-	Stone[16][14] = WHITE;
 	Stone[12][11] = WHITE;
 	Stone[12][12] = WHITE;
 	Stone[12][13] = WHITE;
 	Stone[12][14] = WHITE;
 }
-void PrintStone(int stone, int def)
+void PrintStone(int stone, int def, int longs)
 {
 	if (stone == BLANK)
 		printf("■");
-	else if (stone == BLACK)
-		if(def == 1)
+	if (stone == BLACK)
+		if (longs == 1)
+			printf("♧");
+		else if(def == 1)
 			printf("☆");
 		else
 			printf("○");
-	else if (stone == WHITE)
-		if (def == 1)
+	if (stone == WHITE)
+		if (longs == 1)
+			printf("♣"); 
+		else if (def == 1)
 			printf("★");
 		else
 			printf("●");
-
+	
 }
 void PrintBoard()
 {
@@ -167,7 +157,7 @@ void PrintBoard()
 		for (int x = 0; x < SIZE; x++)
 		{//좌우 for문
 
-			PrintStone(Stone[y][x], defStone[y][x]);
+			PrintStone(Stone[y][x], defStone[y][x], longStone[y][x]);
 		}
 		printf("\n");
 	}
@@ -290,9 +280,9 @@ void ScanSide()
 						linebmax[y].e = lineb[y][i + 1].e;
 						linebmax[y].line = y;
 						linebmax[y].blank = lineb[y][i].e + 1;
-						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max - 1;
+						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max;
 
-						if ((lineb[y][i].max + lineb[y][i + 1].max - 1) == 3 || (lineb[y][i].max + lineb[y][i + 1].max - 1) == 4) {
+						if ((lineb[y][i].max + lineb[y][i + 1].max) == 3 || (lineb[y][i].max + lineb[y][i + 1].max) == 4) {
 							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++){
 								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
@@ -340,9 +330,9 @@ void ScanSide()
 						linewmax[y].e = linew[y][i + 1].e;
 						linewmax[y].line = y;
 						linewmax[y].blank = linew[y][i].e + 1;
-						linewmax[y].max = linew[y][i].max + linew[y][i + 1].max - 1;
+						linewmax[y].max = linew[y][i].max + linew[y][i + 1].max;
 
-						if ((linew[y][i].max + linew[y][i + 1].max - 1) == 3 || (linew[y][i].max + linew[y][i + 1].max - 1) == 4) {
+						if ((linew[y][i].max + linew[y][i + 1].max) == 3 || (linew[y][i].max + linew[y][i + 1].max) == 4) {
 							for (int k = linew[y][i].s; k <= linew[y][i + 1].e; k++) {
 								if (k != linew[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
@@ -386,25 +376,33 @@ void ScanSide()
 		if (realwmax.max < realbmax.max) {
 			printf("가로줄 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", i, realbmax.line);
+					longStone[realbmax.line][i] = 1;
+				}
 		}
 		else if (realwmax.max == realbmax.max) {
 			printf("가로줄 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", i, realbmax.line);
+					longStone[realbmax.line][i] = 1;
+				}
 			printf("\n");
 			printf("가로줄 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
+				if (realwmax.blank != i) {
 					printf("(%d,%d)", i, realwmax.line);
+					longStone[realbmax.line][i] = 1;
+				}
 		}
 		else {
 			printf("가로줄 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
+				if (realwmax.blank != i) {
 					printf("(%d,%d)", i, realwmax.line);
+					longStone[realbmax.line][i] = 1;
+				}
 		}
 		printf("\n");
 	}
@@ -480,10 +478,10 @@ void ScanLine()
 						linebmax[x].e = lineb[x][i + 1].e;
 						linebmax[x].line = x;
 						linebmax[x].blank = lineb[x][i].e + 1;
-						linebmax[x].max = lineb[x][i].max + lineb[x][i + 1].max - 1;
+						linebmax[x].max = lineb[x][i].max + lineb[x][i + 1].max;
 
-						if ((lineb[x][i].max + lineb[x][i + 1].max - 1) == 3 || (lineb[x][i].max + lineb[x][i + 1].max - 1) == 4) {
-							for (int k = lineb[x][i].s; k <= lineb[x][i].e; k++) {
+						if ((lineb[x][i].max + lineb[x][i + 1].max) == 3 || (lineb[x][i].max + lineb[x][i + 1].max) == 4) {
+							for (int k = lineb[x][i].s; k <= lineb[x][i + 1].e; k++) {
 								if (k != lineb[x][i].e + 1)//공백 칸이 아니면
 									defStone[k][x] = 1;
 							}
@@ -497,9 +495,8 @@ void ScanLine()
 					linebmax[x].blank = -1;
 					linebmax[x].max = lineb[x][i].max;
 
-					if ((lineb[x][i].max + lineb[x][i + 1].max - 1) == 3 || (lineb[x][i].max + lineb[x][i + 1].max - 1) == 4) {
-						for (int k = lineb[x][i].s; k <= lineb[x][i + 1].e; k++) {
-							if (k != lineb[x][i].e + 1)//공백 칸이 아니면
+					if (lineb[x][i].max == 3 || lineb[x][i].max == 4) {
+						for (int k = lineb[x][i].s; k <= lineb[x][i].e; k++) {
 								defStone[k][x] = 1;
 						}
 					}
@@ -530,10 +527,10 @@ void ScanLine()
 						linewmax[x].e = linew[x][i + 1].e;
 						linewmax[x].line = x;
 						linewmax[x].blank = linew[x][i].e + 1;
-						linewmax[x].max = linew[x][i].max + linew[x][i + 1].max - 1;
+						linewmax[x].max = linew[x][i].max + linew[x][i + 1].max;
 
-						if ((linew[x][i].max + linew[x][i + 1].max - 1) == 3 || (linew[x][i].max + linew[x][i + 1].max - 1) == 4) {
-							for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
+						if ((linew[x][i].max + linew[x][i + 1].max) == 3 || (linew[x][i].max + linew[x][i + 1].max) == 4) {
+							for (int k = linew[x][i].s; k <= linew[x][i + 1].e; k++) {
 								if (k != linew[x][i].e + 1)//공백 칸이 아니면
 									defStone[k][x] = 1;
 							}
@@ -547,9 +544,8 @@ void ScanLine()
 					linewmax[x].blank = -1;
 					linewmax[x].max = linew[x][i].max;
 
-					if ((linew[x][i].max + linew[x][i + 1].max - 1) == 3 || (linew[x][i].max + linew[x][i + 1].max - 1) == 4) {
+					if (linew[x][i].max == 3 || linew[x][i].max == 4) {
 						for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
-							if (k != linew[x][i + 1].e + 1)//공백 칸이 아니면
 								defStone[k][x] = 1;
 						}
 					}
@@ -576,25 +572,33 @@ void ScanLine()
 		if (realwmax.max < realbmax.max) {
 			printf("세로줄 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", realbmax.line, i);
+					longStone[i][realbmax.line] = 1;
+				}
 		}
 		else if (realwmax.max == realbmax.max) {
 			printf("세로줄 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i){
 					printf("(%d,%d)", realbmax.line, i);
+					longStone[i][realbmax.line] = 1;
+				}
 			printf("\n");
 			printf("세로줄 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
-					printf("(%d,%d)", realwmax.line, i);
+				if (realwmax.blank != i) {
+					printf("(%d,%d)", realbmax.line, i);
+					longStone[i][realbmax.line] = 1;
+				}
 		}
 		else {
 			printf("세로줄 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
-					printf("(%d,%d)", realwmax.line, i);
+				if (realwmax.blank != i) {
+					printf("(%d,%d)", realbmax.line, i);
+					longStone[i][realbmax.line] = 1;
+				}
 		}
 		printf("\n");
 	}
@@ -695,8 +699,8 @@ void ScanRightUp()
 			linebmax[y].blank = -1;
 
 			if (lineb[y][0].max == 3 || lineb[y][0].max == 4) {
-				for (int k = linew[y][0].s; k <= linew[y][0].e; k++) {
-					if (k != linew[y][0].e + 1)//공백 칸이 아니면
+				for (int k = lineb[y][0].s; k <= lineb[y][0].e; k++) {
+					if (k != lineb[y][0].e + 1)//공백 칸이 아니면
 						defStone[y - k][k] = 1;
 				}
 			}
@@ -710,11 +714,11 @@ void ScanRightUp()
 						linebmax[y].e = lineb[y][i + 1].e;
 						linebmax[y].line = y;
 						linebmax[y].blank = lineb[y][i].e + 1;
-						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max - 1;
+						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max;
 
-						if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
-							for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
-								if (k != linew[y][i].e + 1)//공백 칸이 아니면
+						if ((lineb[y][i].max + lineb[y][i + 1].max) == 3 || (lineb[y][i].max + lineb[y][i + 1].max) == 4) {
+							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++) {
+								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y - k][k] = 1;
 							}
 						}
@@ -728,8 +732,7 @@ void ScanRightUp()
 					linebmax[y].max = lineb[y][i].max;
 
 					if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
-						for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
-							if (k != linew[y][i].e + 1)//공백 칸이 아니면
+						for (int k = lineb[y][i].s; k <= lineb[y][i].e; k++) {
 								defStone[y - k][k] = 1;
 						}
 					}
@@ -743,6 +746,13 @@ void ScanRightUp()
 			linewmax[y].e = linew[y][0].e;
 			linewmax[y].line = y;
 			linewmax[y].blank = -1;
+
+			if (linew[y][0].max == 3 || linew[y][0].max == 4) {
+				for (int k = linew[y][0].s; k <= linew[y][0].e; k++) {
+					if (k != linew[y][0].e + 1)//공백 칸이 아니면
+						defStone[y - k][k] = 1;
+				}
+			}
 		}
 		else {
 			//한 곳에 두개 이상일 때
@@ -754,6 +764,13 @@ void ScanRightUp()
 						linewmax[y].line = y;
 						linewmax[y].blank = linew[y][i].e + 1;
 						linewmax[y].max = linew[y][i].max + linew[y][i + 1].max - 1;
+
+						if ((linew[y][i].max + linew[y][i + 1].max) == 3 || (linew[y][i].max + linew[y][i + 1].max) == 4) {
+							for (int k = linew[y][i].s; k <= linew[y][i + 1].e; k++) {
+								if (k != linew[y][i].e + 1)//공백 칸이 아니면
+									defStone[y - k][k] = 1;
+							}
+						}
 					}
 				}
 				else if (linewmax[y].max < linew[y][i].max) {
@@ -762,6 +779,12 @@ void ScanRightUp()
 					linewmax[y].line = y;
 					linewmax[y].blank = -1;
 					linewmax[y].max = linew[y][i].max;
+
+					if (linew[y][i].max == 3 || linew[y][i].max == 4) {
+						for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
+							defStone[y - k][k] = 1;
+						}
+					}
 				}
 			}
 		}
@@ -786,25 +809,33 @@ void ScanRightUp()
 		if (realwmax.max < realbmax.max) {
 			printf("우상향 대각선 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", i, realbmax.line - i);
+					longStone[realbmax.line - i][i] = 1;
+				}
 		}
 		else if (realwmax.max == realbmax.max) {
 			printf("우상향 대각선 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i)
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", i, realbmax.line - i);
+					longStone[realbmax.line - i][i] = 1;
+				}
 			printf("\n");
 			printf("우상향 대각선 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
+				if (realwmax.blank != i) {
 					printf("(%d,%d)", i, realwmax.line - i);
+					longStone[realwmax.line - i][i] = 1;
+				}
 		}
 		else {
 			printf("우상향 대각선 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
-				if (realwmax.blank != i)
+				if (realwmax.blank != i) {
 					printf("(%d,%d)", i, realwmax.line - i);
+					longStone[realwmax.line - i][i] = 1;
+				}
 		}
 		printf("\n");
 	}
@@ -857,7 +888,6 @@ void ScanRightDown()
 		}
 		linecount++;
 	}
-
 	for (int x = 1; x < SIZE; x++)
 	{
 		linebc[linecount] = 0, linewc[linecount] = 0;
@@ -909,6 +939,15 @@ void ScanRightDown()
 			linebmax[y].e = lineb[y][0].e;
 			linebmax[y].line = lineb[y][0].line;
 			linebmax[y].blank = -1;
+
+			if (lineb[y][0].max == 3 || lineb[y][0].max == 4) {
+				for (int k = lineb[y][0].s; k <= lineb[y][0].e; k++) {
+						if(y<SIZE)
+							defStone[k][k + lineb[y][0].line] = 1;
+						else
+							defStone[k + lineb[y][0].line][k] = 1;
+				}
+			}
 		}
 		else {
 			//한 곳에 두개 이상일 때
@@ -920,6 +959,16 @@ void ScanRightDown()
 						linebmax[y].line = lineb[y][i].line;
 						linebmax[y].blank = lineb[y][i].e + 1;
 						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max - 1;
+
+						if ((lineb[y][i].max + lineb[y][i + 1].max) == 3 || (lineb[y][i].max + lineb[y][i + 1].max) == 4) {
+							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++) {
+								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
+									if (y < SIZE)
+										defStone[k][k + lineb[y][i].line] = 1;
+									else
+										defStone[k + lineb[y][i].line][k] = 1;
+							}
+						}
 					}
 				}
 				else if (linebmax[y].max < lineb[y][i].max) {
@@ -928,16 +977,34 @@ void ScanRightDown()
 					linebmax[y].line = lineb[y][i].line;
 					linebmax[y].blank = -1;
 					linebmax[y].max = lineb[y][i].max;
+
+					if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
+						for (int k = lineb[y][i].s; k <= lineb[y][i].e; k++) {
+							if (y < SIZE)
+								defStone[k][k + lineb[y][i].line] = 1;
+							else
+								defStone[k + lineb[y][i].line][k] = 1;
+						}
+					}
 				}
 			}
 		}
 		//최종에 흰돌 집어넣기
-		if (linewc[y] < 2) {
+		if (linewc[y] < 1) {
 			linewmax[y].max = linew[y][0].max;
 			linewmax[y].s = linew[y][0].s;
 			linewmax[y].e = linew[y][0].e;
 			linewmax[y].line = linew[y][0].line;
 			linewmax[y].blank = -1;
+
+			if (linew[y][0].max == 3 || linew[y][0].max == 4) {
+				for (int k = linew[y][0].s; k <= linew[y][0].e; k++) {
+					if (y < SIZE)
+						defStone[k][k + linew[y][0].line] = 1;
+					else
+						defStone[k + linew[y][0].line][k] = 1;
+				}
+			}
 		}
 		else {
 			//한 곳에 두개 이상일 때
@@ -949,6 +1016,16 @@ void ScanRightDown()
 						linewmax[y].line = linew[y][i].line;
 						linewmax[y].blank = linew[y][i].e + 1;
 						linewmax[y].max = linew[y][i].max + linew[y][i + 1].max - 1;
+
+						if ((linew[y][i].max + linew[y][i + 1].max) == 3 || (linew[y][i].max + linew[y][i + 1].max) == 4) {
+							for (int k = linew[y][i].s; k <= linew[y][i + 1].e; k++) {
+								if (k != linew[y][i].e + 1)//공백 칸이 아니면
+									if (y < SIZE)
+										defStone[k][k + linew[y][i].line] = 1;
+									else
+										defStone[k + linew[y][i].line][k] = 1;
+							}
+						}
 					}
 				}
 				else if (linewmax[y].max < linew[y][i].max) {
@@ -957,12 +1034,21 @@ void ScanRightDown()
 					linewmax[y].line = linew[y][i].line;
 					linewmax[y].blank = -1;
 					linewmax[y].max = linew[y][i].max;
+
+					if (linew[y][i].max == 3 || linew[y][i].max == 4) {
+						for (int k = linew[y][i].s; k <= linew[y][i].e; k++) {
+							if (y < SIZE)
+								defStone[k][k + linew[y][i].line] = 1;
+							else
+								defStone[k + linew[y][i].line][k] = 1;
+						}
+					}
 				}
 			}
 		}
 	}
 	
-
+	
 	//전체에서 가장 긴 줄
 	{
 		//아래 쪽 대각선이면 x, x+y 위면 x+y, y
@@ -991,37 +1077,53 @@ void ScanRightDown()
 			printf("우하향 대각선 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
 				if (realbmax.blank != i)
-					if(realbmax.down ==TRUE)
+					if (realbmax.down == TRUE) {
 						printf("(%d,%d)", i, i + realbmax.line);
-					else
+						longStone[i + realbmax.line][i] = 1;
+					}
+					else {
 						printf("(%d,%d)", i + realbmax.line, i);
+						longStone[i][i + realbmax.line] = 1;
+					}
 		}
 		else if (realwmax.max == realbmax.max) {
 			printf("우하향 대각선 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
 				if (realbmax.blank != i)
-					if (realbmax.down == TRUE)
+					if (realbmax.down == TRUE) {
 						printf("(%d,%d)", i, i + realbmax.line);
-					else
+						longStone[i + realbmax.line][i] = 1;
+					}
+					else {
 						printf("(%d,%d)", i + realbmax.line, i);
+						longStone[i][i + realbmax.line] = 1;
+					}
 
 			printf("\n");
 			printf("우하향 대각선 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
 				if (realwmax.blank != i)
-					if (realwmax.down == TRUE)
+					if (realwmax.down == TRUE) {
 						printf("(%d,%d)", i, i + realwmax.line);
-					else
+						longStone[i + realwmax.line][i] = 1;
+					}
+					else {
 						printf("(%d,%d)", i + realwmax.line, i);
+						longStone[i][i + realwmax.line] = 1;
+					}
 		}
 		else {
 			printf("우하향 대각선 최대 WHITE : ");
 			for (int i = realwmax.s; i <= realwmax.e; i++)
 				if (realwmax.blank != i)
-					if (realwmax.down == TRUE)
+					if (realwmax.down == TRUE) {
 						printf("(%d,%d)", i, i + realwmax.line);
-					else
+						longStone[i + realwmax.line][i] = 1;
+					}
+					else {
 						printf("(%d,%d)", i + realwmax.line, i);
+						longStone[i][i + realwmax.line] = 1;
+					}
 		}
 		printf("\n");
 	}
