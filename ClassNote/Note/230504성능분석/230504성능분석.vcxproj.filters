@@ -2,5 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="성능분석.cpp" />
+    <ClCompile Include="0511트리.cpp" />
   </ItemGroup>
 </Project>
