@@ -93,7 +93,7 @@ void StartStone()
 {
 	Stone[1][1] = BLACK;
 	Stone[1][2] = BLACK;
-	
+
 	Stone[1][4] = BLACK;
 	Stone[1][5] = BLACK;
 	Stone[1][6] = BLACK;
@@ -220,7 +220,7 @@ void ScanSide()
 	for (int y = 0; y < SIZE; y++)
 	{
 		linebc = 0, linewc = 0;
-		
+
 		for (int x = 0; x < SIZE; x++)
 		{
 			//검은돌 가로줄 넣기
@@ -232,7 +232,7 @@ void ScanSide()
 					lineb[y][linebc].e = x++;
 					lineb[y][linebc].max++;
 					if (Stone[y][x] != BLACK) {
-							x--;
+						x--;
 						linebc++;
 						break;
 					}
@@ -287,7 +287,7 @@ void ScanSide()
 								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
 							}
-						}`
+						}
 					}
 				}
 				else if (linebmax[y].max < lineb[y][i].max) {
@@ -356,18 +356,18 @@ void ScanSide()
 				}
 			}
 		}
-		
+
 	}
 	//전체에서 가장 긴 줄
 	{
 		checkline realbmax = { 0 };
-		for (int i = 0; i < SIZE; i++){
+		for (int i = 0; i < SIZE; i++) {
 			if (realbmax.max < linebmax[i].max) {
 				realbmax = linebmax[i];
 			}
 		}
 		checkline realwmax = { 0 };
-		for (int i = 0; i < SIZE; i++){
+		for (int i = 0; i < SIZE; i++) {
 			if (realwmax.max < linewmax[i].max) {
 				realwmax = linewmax[i];
 			}
@@ -462,7 +462,7 @@ void ScanLine()
 			linebmax[x].line = x;
 			linebmax[x].blank = -1;
 
-			if (lineb[x][0].max == 3 || lineb[x][0].max == 4){
+			if (lineb[x][0].max == 3 || lineb[x][0].max == 4) {
 				for (int k = lineb[x][0].s; k <= lineb[x][0].e; k++) {
 					if (k != lineb[x][0].e + 1)//공백 칸이 아니면
 						defStone[k][x] = 1;
@@ -580,7 +580,7 @@ void ScanLine()
 		else if (realwmax.max == realbmax.max) {
 			printf("세로줄 최대 BLACK : ");
 			for (int i = realbmax.s; i <= realbmax.e; i++)
-				if (realbmax.blank != i){
+				if (realbmax.blank != i) {
 					printf("(%d,%d)", realbmax.line, i);
 					longStone[i][realbmax.line] = 1;
 				}
@@ -789,7 +789,7 @@ void ScanRightUp()
 			}
 		}
 	}
-	
+
 
 	//전체에서 가장 긴 줄
 	{
@@ -1049,6 +1049,8 @@ void ScanRightDown()
 	}
 	
 	
+
+
 	//전체에서 가장 긴 줄
 	{
 		//아래 쪽 대각선이면 x, x+y 위면 x+y, y
