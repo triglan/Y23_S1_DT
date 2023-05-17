@@ -1,36 +1,56 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <windows.h>
+typedef struct info {
+	int hp;
 
-// 연결 리스트 노드 구조체
-struct Info {
-    int data;           // 노드가 저장하는 데이터
-    struct Info* next;  // 다음 노드를 가리키는 포인터
+	struct info* next;
+}Info;
+
+typedef struct Tree {
+	int hp;
+
+	struct Tree* l;
+	struct Tree* r;
 };
-
-void addFirst(struct Info* target, int data)
-{
-    struct Info* newNode = malloc(sizeof(struct Info));
-    newNode->next = target->next;
-    newNode->data = data;
-
-    target->next = newNode;
-}
 
 int main()
 {
-    struct Info* head = malloc(sizeof(struct Info));
+	
 
-    head->next = NULL;
+    Info* head= malloc(sizeof(Info));
+	head->next = NULL;
 
-    addFirst(head, 10);
-    addFirst(head, 20);
-    addFirst(head, 30);
+	Info* a = malloc(sizeof(Info));
+	a->hp = 10;
+	a->next = head->next;
+	head->next = a;
+	
+	Info* b = malloc(sizeof(Info));
+	b->hp = 20;
+	b->next = head->next;
+	head->next = b;
+	
+	Info* c = malloc(sizeof(Info));
+	c->hp = 30;
+	c->next = head->next;
+	head->next = c;
+	
+	Info* d = malloc(sizeof(Info));
+	d->hp = 40;
+	d->next = head->next;
+	head->next = d;
 
-    struct Info* p = head->next;
-    while (p != NULL)
-    {
-        printf("%d\n", p->data);
-        p = p->next;
-    }
-    
+	Info* e = malloc(sizeof(Info));
+	e->hp = 40;
+	e->next = head->next;
+	head->next = e;
+
+	Info *temp = malloc(sizeof(Info));
+	temp = b->next;
+	//b->next = dz
+	//b->next = d->next;
+	//d->next = temp;
+
+	printf("1");
 }
+
