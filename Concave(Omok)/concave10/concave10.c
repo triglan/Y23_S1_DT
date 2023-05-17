@@ -136,18 +136,18 @@ void PrintStone(int stone, int def, int longs)
 	if (stone == BLACK)
 		if (longs == 1)
 			printf("♧");
-		else if (def == 1)
+		else if(def == 1)
 			printf("☆");
 		else
 			printf("○");
 	if (stone == WHITE)
 		if (longs == 1)
-			printf("♣");
+			printf("♣"); 
 		else if (def == 1)
 			printf("★");
 		else
 			printf("●");
-
+	
 }
 void PrintBoard()
 {
@@ -283,7 +283,7 @@ void ScanSide()
 						linebmax[y].max = lineb[y][i].max + lineb[y][i + 1].max;
 
 						if ((lineb[y][i].max + lineb[y][i + 1].max) == 3 || (lineb[y][i].max + lineb[y][i + 1].max) == 4) {
-							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++) {
+							for (int k = lineb[y][i].s; k <= lineb[y][i + 1].e; k++){
 								if (k != lineb[y][i].e + 1)//공백 칸이 아니면
 									defStone[y][k] = 1;
 							}
@@ -497,7 +497,7 @@ void ScanLine()
 
 					if (lineb[x][i].max == 3 || lineb[x][i].max == 4) {
 						for (int k = lineb[x][i].s; k <= lineb[x][i].e; k++) {
-							defStone[k][x] = 1;
+								defStone[k][x] = 1;
 						}
 					}
 				}
@@ -546,7 +546,7 @@ void ScanLine()
 
 					if (linew[x][i].max == 3 || linew[x][i].max == 4) {
 						for (int k = linew[x][i].s; k <= linew[x][i].e; k++) {
-							defStone[k][x] = 1;
+								defStone[k][x] = 1;
 						}
 					}
 				}
@@ -733,7 +733,7 @@ void ScanRightUp()
 
 					if (lineb[y][i].max == 3 || lineb[y][i].max == 4) {
 						for (int k = lineb[y][i].s; k <= lineb[y][i].e; k++) {
-							defStone[y - k][k] = 1;
+								defStone[y - k][k] = 1;
 						}
 					}
 				}
@@ -942,10 +942,10 @@ void ScanRightDown()
 
 			if (lineb[y][0].max == 3 || lineb[y][0].max == 4) {
 				for (int k = lineb[y][0].s; k <= lineb[y][0].e; k++) {
-					if (y < SIZE)
-						defStone[k][k + lineb[y][0].line] = 1;
-					else
-						defStone[k + lineb[y][0].line][k] = 1;
+						if(y<SIZE)
+							defStone[k][k + lineb[y][0].line] = 1;
+						else
+							defStone[k + lineb[y][0].line][k] = 1;
 				}
 			}
 		}
@@ -1047,6 +1047,8 @@ void ScanRightDown()
 			}
 		}
 	}
+	
+	
 
 
 	//전체에서 가장 긴 줄

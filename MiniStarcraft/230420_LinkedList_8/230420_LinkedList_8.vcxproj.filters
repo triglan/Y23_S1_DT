@@ -5,5 +5,6 @@
     <ClCompile Include="source.cpp" />
     <ClCompile Include="sortbyID예시.cpp" />
     <ClCompile Include="miniStar_8_2.c" />
+    <ClCompile Include="miniStar_8_3.c" />
   </ItemGroup>
 </Project>

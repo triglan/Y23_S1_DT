@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "230420_LinkedList_8", "2304
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "230406_DT", "230406_DT\230406_DT.vcxproj", "{2625F7ED-9819-4115-B980-F9D8D9061AE4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniStarcraft_11_LargeFile", "MiniStarcraft_11_LargeFile\MiniStarcraft_11_LargeFile.vcxproj", "{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{2625F7ED-9819-4115-B980-F9D8D9061AE4}.Release|x64.Build.0 = Release|x64
 		{2625F7ED-9819-4115-B980-F9D8D9061AE4}.Release|x86.ActiveCfg = Release|Win32
 		{2625F7ED-9819-4115-B980-F9D8D9061AE4}.Release|x86.Build.0 = Release|Win32
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Debug|x64.ActiveCfg = Debug|x64
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Debug|x64.Build.0 = Debug|x64
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Debug|x86.ActiveCfg = Debug|Win32
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Debug|x86.Build.0 = Debug|Win32
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Release|x64.ActiveCfg = Release|x64
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Release|x64.Build.0 = Release|x64
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Release|x86.ActiveCfg = Release|Win32
+		{DFE15B76-F4F8-49FD-8F8D-3C190F9497F6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
