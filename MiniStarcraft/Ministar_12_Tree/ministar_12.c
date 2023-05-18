@@ -191,7 +191,7 @@ Tree* Delete_BT(Tree* root, char *name) {
 		Tree* temp = FindMin(root->right);
 		root->atk = temp->atk, root->def = temp->def, root->hp = temp->hp;
 		root->right = Delete_BT(root->right, temp);
-		//free(temp);
+		free(temp);
 	}
 	return root;
 }
