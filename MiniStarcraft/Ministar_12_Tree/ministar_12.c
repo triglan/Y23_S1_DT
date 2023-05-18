@@ -89,8 +89,8 @@ int main()
 void Make_SL(Info* head) {
 	clock_t start = clock();
 
-	//fp = fopen("DS_Large.txt", "r");
-	fp = fopen("temp.txt", "r");
+	fp = fopen("DS_Large.txt", "r");
+	//fp = fopen("temp.txt", "r");
 	Info temp = { 0 };
 
 	if (fp == NULL) {
@@ -126,6 +126,8 @@ void Make_BT(Info* head, Tree** root) {
 		*root = Insert_BT(p->atk, p->def, p->hp, p->name, p->pos, *root);
 		p = p->next;
 	}
+	clock_t end = clock();
+	printf("입력 경과 시간 : %lf", (double)(end - start) / CLOCKS_PER_SEC);
 }
 Tree* createNode(int atk, int def, int hp, char* name, char* pos) {
 	clock_t start = clock();
