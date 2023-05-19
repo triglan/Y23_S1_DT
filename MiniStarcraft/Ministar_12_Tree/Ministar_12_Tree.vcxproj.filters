@@ -4,5 +4,6 @@
     <ClCompile Include="ministar_12.c" />
     <ClCompile Include="Note.cpp" />
     <ClCompile Include="ministar_12_2.c" />
+    <ClCompile Include="ministar12_3.c" />
   </ItemGroup>
 </Project>

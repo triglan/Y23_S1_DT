@@ -214,9 +214,7 @@ void SearchByName(Tree* root, char* name) {
 void InorderTravel(Tree* root) {
 	if (root == NULL)
 		return;
-	//count++;
 	InorderTravel(root->left);
-	//if (count % 1000 == 0)
 		printf("%s %s %d %d %d\n", root->pos, root->name, root->hp, root->atk, root->def);
 	InorderTravel(root->right);
 }
