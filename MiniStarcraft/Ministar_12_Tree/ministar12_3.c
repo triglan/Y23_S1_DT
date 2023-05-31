@@ -7,12 +7,12 @@
 
 typedef struct info {
 	int hp, atk, def;
-	char name[20], pos[20];
+	char name[10], pos[10];
 	struct Info *next;
 }Info;
 typedef struct tree{
 	int hp, atk, def;
-	char name[20], pos[20];
+	char name[10], pos[10];
 	struct Tree *left;
 	struct Tree *right;
 }Tree;
@@ -85,6 +85,7 @@ FILE* fp;
 void Make_SL(Info* head) {
 	fp = fopen("DS_Large.txt", "r");
 	Info temp;
+	int count = 0;
 	while (!feof(fp)) {
 		Info* p = malloc(sizeof(Info));
 		fscanf(fp, "%s %s %d %d %d\n", &temp.pos, &temp.name, &temp.hp, &temp.atk, &temp.def);
@@ -94,10 +95,20 @@ void Make_SL(Info* head) {
 		p->atk = temp.atk;
 		p->def = temp.def;
 
+		count++;
+		if (count % 10000 == 0)
+			printf("count : %d\n", count);
 		p->next = head->next;
 		head->next = p;
 	}
 	fclose(fp);
+
+	Info* current = head->next;
+	while (current != NULL) {
+		Info* temp = current;
+		current = current->next;
+		free(temp);
+	}
 }
 void Make_BT(Info* head, Tree** node) {
 	Info* p = head->next;
