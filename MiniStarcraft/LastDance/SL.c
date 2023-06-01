@@ -7,14 +7,15 @@
 
 typedef struct info {
 	int hp, atk, def;
-	char name[10], pos[10];
-	struct Info *next;
+	char name[20];
+	char pos[20];
+	struct Info* next;
 }Info;
-typedef struct tree{
+typedef struct tree {
 	int hp, atk, def;
-	char name[10], pos[10];
-	struct Tree *left;
-	struct Tree *right;
+	char name[20], pos[20];
+	struct Tree* left;
+	struct Tree* right;
 }Tree;
 
 void Make_SL(Info* head);
@@ -54,21 +55,21 @@ int main() {
 			start = clock();
 			scanf_s("%s %s %d %d %d", &pos, sizeof(pos), &name, sizeof(name), &hp, &atk, &def);
 			Insert_BT(pos, name, hp, atk, def, node);
-			end = clock(); 
+			end = clock();
 			printf("입력 경과 시간 : %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 			break;
 		case '2':
 			start = clock();
 			scanf_s("%s", &name, sizeof(name));
 			Delete_BT(name, node);
-			end = clock(); 
+			end = clock();
 			printf("삭제 경과 시간 : %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 			break;
 		case '3':
 			start = clock();
 			scanf_s("%s", &name, sizeof(name));
 			SearchByName_BT(name, node);
-			end = clock(); 
+			end = clock();
 			printf("서치 경과 시간 : %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 			break;
 		case '4':
@@ -81,27 +82,45 @@ int main() {
 
 	}
 }
-FILE* fp;
 void Make_SL(Info* head) {
+	FILE* fp;
 	fp = fopen("temp.txt", "r");
-	Info temp;
-	int count = 0;
+
 	while (!feof(fp)) {
-		Info* p = malloc(sizeof(Info));
-		fscanf_s(fp, "%s %s %d %d %d\n", &p->pos, sizeof(p->pos), &p->name, sizeof(p->name), &p->hp, &p->atk, &p->def);
+		Info* p = (Info*)malloc(sizeof(Info));
+		fscanf_s(fp, "%s %s %d %d %d", &p->pos, sizeof(p->pos), &p->name, sizeof(p->name), &p->hp, &p->atk, &p->def);
 
 		p->next = head->next;
 		head->next = p;
 	}
 	fclose(fp);
-
-	Info* current = head->next;
-	while (current != NULL) {
-		Info* temp = current;
-		current = current->next;
-		free(temp);
-	}
 }
+//void Make_SL(Info* head) {
+//	FILE* fp;
+//	fp = fopen("temp.txt", "r");
+//
+//	int count = 0;
+//	while (1) {
+//		if (!feof(fp)) {
+//			Info* p = (Info*)malloc(sizeof(Info));
+//			fscanf_s(fp, "%s %s %d %d %d", &p->pos, sizeof(p->pos), &p->name, sizeof(p->name), &p->hp, &p->atk, &p->def);
+//
+//			p->next = head->next;
+//			head->next = p;
+//
+//		}
+//		else
+//			break;
+//	}
+//	fclose(fp);
+//
+//	Info* current = head->next;
+//	while (current != NULL) {
+//		Info* temp = current;
+//		current = current->next;
+//		free(temp);
+//	}
+//}
 void Make_BT(Info* head, Tree** node) {
 	Info* p = head->next;
 	while (1) {
@@ -112,7 +131,7 @@ void Make_BT(Info* head, Tree** node) {
 	}
 }
 void SearchByName_BT(char* name, Tree* node) {
-	if (node == NULL){
+	if (node == NULL) {
 		printf("못찾음\n");
 		return;
 	}
@@ -156,7 +175,7 @@ Tree* Delete_BT(char* name, Tree* node) {
 	if (strcmp(node->name, name) > 0) {
 		node->left = Delete_BT(name, node->left);
 	}
-	else if (strcmp(node->name, name) < 0){
+	else if (strcmp(node->name, name) < 0) {
 		node->right = Delete_BT(name, node->right);
 	}
 	else {//찾았으면
@@ -193,7 +212,6 @@ void PrintAll_BT(Tree* node) {
 	count++;
 
 	PrintAll_BT(node->left);
-	if(count%10000==0)
 		printf("%s %s %d %d %d\n", node->pos, node->name, node->hp, node->atk, node->def);
 	PrintAll_BT(node->right);
 }

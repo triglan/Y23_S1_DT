@@ -54,7 +54,7 @@ int main()
 {
 	//단일 환형 연결리스트
 	struct Info* head = malloc(sizeof(struct Info));
-	head->next = head;
+	head->next = head;   
 
 	MakeUL(head);
 
