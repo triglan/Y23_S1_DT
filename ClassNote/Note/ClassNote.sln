@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "230504성능분석", "23050
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "230525_그래프", "230525_그래프\230525_그래프.vcxproj", "{7981193F-21DF-4DE7-A200-599C5734FF85}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "230601LastLecture", "230601LastLecture\230601LastLecture.vcxproj", "{C20D422E-F1DE-413D-B69A-FD6F71B411E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{7981193F-21DF-4DE7-A200-599C5734FF85}.Release|x64.Build.0 = Release|x64
 		{7981193F-21DF-4DE7-A200-599C5734FF85}.Release|x86.ActiveCfg = Release|Win32
 		{7981193F-21DF-4DE7-A200-599C5734FF85}.Release|x86.Build.0 = Release|Win32
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Debug|x64.ActiveCfg = Debug|x64
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Debug|x64.Build.0 = Debug|x64
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Debug|x86.ActiveCfg = Debug|Win32
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Debug|x86.Build.0 = Debug|Win32
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Release|x64.ActiveCfg = Release|x64
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Release|x64.Build.0 = Release|x64
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Release|x86.ActiveCfg = Release|Win32
+		{C20D422E-F1DE-413D-B69A-FD6F71B411E3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
