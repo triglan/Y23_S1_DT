@@ -168,3 +168,6 @@ void SearchByNameBT(char* name, Tree* node) {
 		return;
 	}
 }
+void InsertSL(char* pos, char* name, int hp, int atk, int def, Info* node) {
+
+}
