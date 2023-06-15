@@ -81,17 +81,25 @@ int main() {
 
 	}
 }
-FILE* fp;
 void Make_SL(Info* head) {
-	fp = fopen("temp.txt", "r");
-	Info temp;
-	int count = 0;
-	while (!feof(fp)) {
-		Info* p = malloc(sizeof(Info));
-		fscanf_s(fp, "%s %s %d %d %d\n", &p->pos, sizeof(p->pos), &p->name, sizeof(p->name), &p->hp, &p->atk, &p->def);
+	FILE* fp;
+	fp = fopen("DS_Large.txt", "r");
 
-		p->next = head->next;
-		head->next = p;
+	int count = 0;
+	while (1) {
+		if (!feof(fp)) {
+			Info* p = (Info*)malloc(sizeof(Info));
+			fscanf_s(fp, "%s %s %d %d %d", &p->pos, sizeof(p->pos), &p->name, sizeof(p->pos), &p->hp, &p->atk, &p->def);
+
+			p->next = head->next;
+			head->next = p;
+
+			if (count % 10000 == 0)
+				printf("count : %d\n", count);
+			count++;
+		}
+		else
+			break;
 	}
 	fclose(fp);
 
